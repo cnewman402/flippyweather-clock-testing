@@ -521,7 +521,6 @@ class FlippyWeatherTesting extends LitElement {
                     display: flex;
                     align-items: center;
                     position: relative;
-                    height: 100%;
                 }
                 
                 .temperature-overlay {
@@ -529,9 +528,6 @@ class FlippyWeatherTesting extends LitElement {
                     font-weight: bold;
                     color: white;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-                    padding: 4px 8px;
-                    border-radius: 10px;
-                    line-height: 1;
                 }
                 
                 .bottom-section {
