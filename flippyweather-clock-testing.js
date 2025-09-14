@@ -196,26 +196,6 @@ class FlippyWeatherTesting extends LitElement {
         return this._config.temperature_unit === 'celsius' ? 'C' : 'F';
     }
 
-    convertTemperature(temperature, unit) {
-        if (!temperature || temperature === '--') return '--';
-        
-        // Check if Home Assistant is already providing the temperature in the desired unit
-        // Most HA installations provide temperature in the user's preferred unit already
-        if (unit === 'celsius') {
-            // If user wants Celsius and HA temp seems like Fahrenheit (>50), convert F to C
-            if (temperature > 50) {
-                return Math.round((temperature - 32) * 5/9);
-            }
-            return Math.round(temperature);
-        } else {
-            // If user wants Fahrenheit and HA temp seems like Celsius (<50), convert C to F
-            if (temperature < 50) {
-                return Math.round((temperature * 9/5) + 32);
-            }
-            return Math.round(temperature);
-        }
-    }
-
     getWeatherFromEntity() {
         if (!this.hass || !this._config.weather_entity) {
             return {
@@ -240,10 +220,11 @@ class FlippyWeatherTesting extends LitElement {
         const condition = entity.state || 'Unknown';
         const forecast = entity.attributes.forecast || [];
         
-        const convertedTemp = this.convertTemperature(temperature, this._config.temperature_unit);
+        // Use temperature as-is from Home Assistant (it's already in the correct unit)
+        const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
         
         return {
-            temperature: convertedTemp,
+            temperature: displayTemp,
             condition: condition,
             icon: this.getWeatherEmoji(condition),
             forecast: forecast.slice(0, 4)
@@ -321,7 +302,7 @@ class FlippyWeatherTesting extends LitElement {
             <div class="forecast-container">
                 ${forecast.map(period => {
                     const temp = period.temperature || period.templow || '--';
-                    const convertedTemp = this.convertTemperature(temp, this._config.temperature_unit);
+                    const displayTemp = temp === '--' ? '--' : Math.round(temp);
                     const condition = period.condition || period.text || 'Unknown';
                     const name = period.datetime ? new Date(period.datetime).toLocaleDateString('en-US', { weekday: 'short' }) : 'N/A';
                     
@@ -329,7 +310,7 @@ class FlippyWeatherTesting extends LitElement {
                         <div class="forecast-item">
                             <div class="forecast-day">${name}</div>
                             <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
-                            <div class="forecast-temp">${convertedTemp}°${this.getTemperatureUnit()}</div>
+                            <div class="forecast-temp">${displayTemp}°${this.getTemperatureUnit()}</div>
                         </div>
                     `;
                 })}
