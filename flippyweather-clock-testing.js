@@ -269,6 +269,21 @@ class FlippyWeatherTesting extends LitElement {
         return isNightTime ? 'weather-default-night' : 'weather-default';
     }
 
+    getWeatherIconClass(condition) {
+        if (!condition) return 'sun';
+        
+        const lowerCondition = condition.toLowerCase();
+        
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) return 'sun';
+        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return 'rain';
+        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) return 'snow';
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) return 'storm';
+        if (lowerCondition.includes('cloudy')) return 'cloud';
+        if (lowerCondition.includes('fog')) return 'fog';
+        
+        return 'sun';
+    }
+
     renderForecast(forecast) {
         if (!forecast || forecast.length === 0) {
             return html``;
