@@ -353,7 +353,7 @@ class FlippyWeatherTesting extends LitElement {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 150px;
+                    font-size: 300px;
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
