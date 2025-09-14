@@ -130,12 +130,51 @@ class FlippyWeatherTesting extends LitElement {
         this.updateInterval = setInterval(() => {
             this.requestUpdate();
         }, 1000);
+        
+        // Fetch initial forecast data
+        this.fetchForecastData();
+        
+        // Update forecast data every 10 minutes
+        this.forecastInterval = setInterval(() => {
+            this.fetchForecastData();
+        }, 600000);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
+        }
+        if (this.forecastInterval) {
+            clearInterval(this.forecastInterval);
+        }
+    }
+
+    async fetchForecastData() {
+        if (!this.hass || !this._config.weather_entity) {
+            return;
+        }
+
+        try {
+            console.log('Fetching forecast data via service...');
+            const result = await this.hass.callService('weather', 'get_forecasts', {
+                entity_id: this._config.weather_entity,
+                type: 'daily'
+            });
+            
+            console.log('Forecast service result:', result);
+            
+            if (result && result[this._config.weather_entity] && result[this._config.weather_entity].forecast) {
+                this.forecastData = result[this._config.weather_entity].forecast.slice(0, 4);
+                console.log('Successfully fetched forecast:', this.forecastData);
+                this.requestUpdate();
+            } else {
+                console.log('No forecast data in service response');
+                this.forecastData = [];
+            }
+        } catch (error) {
+            console.error('Error fetching forecast:', error);
+            this.forecastData = [];
         }
     }
 
@@ -217,21 +256,13 @@ class FlippyWeatherTesting extends LitElement {
             };
         }
 
-        // Debug: Check all available attributes to find forecast data
-        console.log('All weather attributes:', Object.keys(entity.attributes));
-        console.log('Entity attributes:', entity.attributes);
-
         const temperature = entity.attributes.temperature || '--';
         const condition = entity.state || 'Unknown';
         
-        // Check multiple possible forecast attribute names
-        let forecast = entity.attributes.forecast || 
-                      entity.attributes.forecast_daily || 
-                      entity.attributes.daily_forecast || 
-                      entity.attributes.forecasts || 
-                      [];
+        // Use forecast data fetched via service instead of entity attributes
+        const forecast = this.forecastData || [];
         
-        console.log('Found forecast data:', forecast);
+        console.log('Using forecast data:', forecast);
         
         // Use temperature as-is from Home Assistant (it's already in the correct unit)
         const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
@@ -240,7 +271,7 @@ class FlippyWeatherTesting extends LitElement {
             temperature: displayTemp,
             condition: condition,
             icon: this.getWeatherEmoji(condition),
-            forecast: forecast.slice(0, 4)
+            forecast: forecast
         };
     }
 
