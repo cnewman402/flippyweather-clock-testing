@@ -216,9 +216,21 @@ class FlippyWeatherTesting extends LitElement {
             };
         }
 
+        // Debug: Check all available attributes to find forecast data
+        console.log('All weather attributes:', Object.keys(entity.attributes));
+        console.log('Entity attributes:', entity.attributes);
+
         const temperature = entity.attributes.temperature || '--';
         const condition = entity.state || 'Unknown';
-        const forecast = entity.attributes.forecast || [];
+        
+        // Check multiple possible forecast attribute names
+        let forecast = entity.attributes.forecast || 
+                      entity.attributes.forecast_daily || 
+                      entity.attributes.daily_forecast || 
+                      entity.attributes.forecasts || 
+                      [];
+        
+        console.log('Found forecast data:', forecast);
         
         // Use temperature as-is from Home Assistant (it's already in the correct unit)
         const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
