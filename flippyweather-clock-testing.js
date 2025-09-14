@@ -16,7 +16,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-                height: 200px;
+                height: 220px;
             }
         `
     },
