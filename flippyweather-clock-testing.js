@@ -96,6 +96,7 @@ class FlippyWeatherTesting extends LitElement {
         this.oldTime = {};
         this.currentCondition = '';
         this.currentTemperature = '--';
+        this.forecastData = [];
     }
 
     static getStubConfig() {
