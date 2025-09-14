@@ -84,7 +84,7 @@ const weatherDefaults = {
 
 const flippyVersion = "3.0.0-testing";
 
-console.info("%c 🌤️ FlippyWeather Clock Testing %c ".concat(flippyVersion, " "), "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
+console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
 class FlippyWeatherTesting extends LitElement {
     constructor() {
@@ -327,6 +327,9 @@ class FlippyWeatherTesting extends LitElement {
         const weatherData = this.getWeatherFromEntity();
         const weatherAnimationClass = this.getWeatherAnimationClass(weatherData.condition);
         const selectedTheme = themes[this._config.theme] || themes.default;
+        
+        const weatherIcon = this.getWeatherEmoji(weatherData.condition);
+        const iconClass = this.getWeatherIconClass(weatherData.condition);
 
         return html`
             <style>
@@ -341,7 +344,6 @@ class FlippyWeatherTesting extends LitElement {
                     justify-content: space-between;
                 }
                 
-                /* LARGE ANIMATED WEATHER ICON BACKGROUND */
                 .weather-icon-large {
                     position: absolute;
                     top: 0;
@@ -447,127 +449,6 @@ class FlippyWeatherTesting extends LitElement {
                     100% { transform: scale(1); opacity: 1; }
                 }
                 
-                /* Weather Animations - moved to bottom 40% */
-                .weather-rain::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 40%;
-                    background-image: 
-                        linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
-                    background-size: 3px 100%, 7px 100%;
-                    animation: rainFall 0.8s linear infinite, rainFall2 1.2s linear infinite;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-                
-                @keyframes rainFall {
-                    0% { transform: translateY(-100%); }
-                    100% { transform: translateY(100%); }
-                }
-                
-                @keyframes rainFall2 {
-                    0% { transform: translateY(-100%) translateX(-1px); }
-                    100% { transform: translateY(100%) translateX(-1px); }
-                }
-                
-                .weather-snow::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 40%;
-                    background-image: 
-                        radial-gradient(1px 1px at 10px 15px, white, transparent),
-                        radial-gradient(1px 1px at 20px 35px, white, transparent),
-                        radial-gradient(1px 1px at 45px 20px, white, transparent);
-                    background-repeat: repeat;
-                    background-size: 50px 25px;
-                    animation: snowFall 8s linear infinite;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-                
-                @keyframes snowFall {
-                    0% { transform: translateY(-100%); }
-                    100% { transform: translateY(100%); }
-                }
-                
-                .weather-cloudy::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: -20%;
-                    width: 140%;
-                    height: 40%;
-                    background: 
-                        radial-gradient(ellipse 50px 25px at 50% 50%, rgba(255,255,255,0.3), transparent),
-                        radial-gradient(ellipse 40px 20px at 30% 40%, rgba(255,255,255,0.2), transparent);
-                    animation: cloudDrift 15s ease-in-out infinite;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-                
-                @keyframes cloudDrift {
-                    0%, 100% { transform: translateX(-5px); }
-                    50% { transform: translateX(5px); }
-                }
-                
-                .weather-storm::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 40%;
-                    background: rgba(255,255,255,0.1);
-                    animation: lightning 3s infinite;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-                
-                @keyframes lightning {
-                    0%, 90%, 100% { opacity: 0; }
-                    5%, 10% { opacity: 1; }
-                }
-                
-                /* Night mode animations */
-                .weather-rain-night::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 40%;
-                    background-image: 
-                        linear-gradient(90deg, rgba(173,216,230,0.4) 1px, transparent 1px);
-                    background-size: 3px 100%;
-                    animation: rainFall 0.8s linear infinite;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-                
-                .weather-clear-night::after {
-                    content: '⭐';
-                    position: absolute;
-                    top: 20%;
-                    right: 20%;
-                    font-size: 1em;
-                    animation: twinkle 3s ease-in-out infinite;
-                    pointer-events: none;
-                    z-index: 1;
-                }
-                
-                @keyframes twinkle {
-                    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-                    50% { opacity: 1; transform: scale(1.2); }
-                }
-                
-                /* Clock and weather content */
                 .top-section {
                     display: flex;
                     align-items: center;
@@ -720,8 +601,7 @@ class FlippyWeatherTesting extends LitElement {
             </style>
             <ha-card>
                 <div class="flippy-container ${weatherAnimationClass}">
-                    <!-- Large animated weather icon background -->
-                    <div class="weather-icon-large ${this.getWeatherAnimationClass(weatherData.condition)}">${this.getWeatherEmoji(weatherData.condition)}</div>
+                    <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
                     <div class="top-section">
                         <div class="htc-clock">
