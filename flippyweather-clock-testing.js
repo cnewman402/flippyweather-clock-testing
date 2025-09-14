@@ -269,33 +269,6 @@ class FlippyWeatherTesting extends LitElement {
         return isNightTime ? 'weather-default-night' : 'weather-default';
     }
 
-    getAnimatedWeatherIconBackground(condition) {
-        if (!condition) return html`<div class="weather-icon-background default-icon">🌤️</div>`;
-        
-        const lowerCondition = condition.toLowerCase();
-        
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) {
-            return html`<div class="weather-icon-background sun-icon">☀️</div>`;
-        }
-        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) {
-            return html`<div class="weather-icon-background rain-icon">🌧️</div>`;
-        }
-        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) {
-            return html`<div class="weather-icon-background snow-icon">❄️</div>`;
-        }
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) {
-            return html`<div class="weather-icon-background storm-icon">⛈️</div>`;
-        }
-        if (lowerCondition.includes('cloudy')) {
-            return html`<div class="weather-icon-background cloud-icon">☁️</div>`;
-        }
-        if (lowerCondition.includes('fog')) {
-            return html`<div class="weather-icon-background fog-icon">🌫️</div>`;
-        }
-        
-        return html`<div class="weather-icon-background default-icon">🌤️</div>`;
-    }
-
     renderForecast(forecast) {
         if (!forecast || forecast.length === 0) {
             return html``;
@@ -353,70 +326,110 @@ class FlippyWeatherTesting extends LitElement {
                     justify-content: space-between;
                 }
                 
-                /* Large background weather icon behind everything */
-                .weather-icon-background {
+                /* LARGE ANIMATED WEATHER ICON BACKGROUND */
+                .weather-icon-large {
                     position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-size: 8em;
-                    opacity: 0.15;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 150px;
                     z-index: 1;
                     pointer-events: none;
+                    color: #000000;
+                    text-shadow: 
+                        3px 3px 0px #ffffff,
+                        -3px -3px 0px #ffffff,
+                        3px -3px 0px #ffffff,
+                        -3px 3px 0px #ffffff,
+                        0px 3px 0px #ffffff,
+                        3px 0px 0px #ffffff,
+                        0px -3px 0px #ffffff,
+                        -3px 0px 0px #ffffff;
+                    line-height: 1;
                 }
                 
-                .weather-icon-background.sun-icon {
-                    animation: sunRotate 8s linear infinite;
+                .weather-icon-large.sun {
+                    animation: sunSpin 2s linear infinite;
                 }
                 
-                .weather-icon-background.rain-icon {
-                    animation: rainBounce 2s ease-in-out infinite;
+                .weather-icon-large.rain {
+                    animation: rainShake 0.5s ease-in-out infinite;
                 }
                 
-                .weather-icon-background.snow-icon {
-                    animation: snowFloat 4s ease-in-out infinite;
+                .weather-icon-large.snow {
+                    animation: snowSpin 3s ease-in-out infinite;
                 }
                 
-                .weather-icon-background.storm-icon {
-                    animation: stormFlash 3s infinite;
+                .weather-icon-large.storm {
+                    animation: stormShake 0.3s ease-in-out infinite;
                 }
                 
-                .weather-icon-background.cloud-icon {
-                    animation: cloudFloat 6s ease-in-out infinite;
+                .weather-icon-large.cloud {
+                    animation: cloudFloat 2s ease-in-out infinite;
                 }
                 
-                .weather-icon-background.fog-icon {
-                    animation: fogWave 4s ease-in-out infinite;
+                .weather-icon-large.fog {
+                    animation: fogPulse 1s ease-in-out infinite;
                 }
                 
-                @keyframes sunRotate {
-                    from { transform: translate(-50%, -50%) rotate(0deg); }
-                    to { transform: translate(-50%, -50%) rotate(360deg); }
+                @keyframes sunSpin {
+                    0% { transform: rotate(0deg) scale(1); }
+                    25% { transform: rotate(90deg) scale(1.1); }
+                    50% { transform: rotate(180deg) scale(1.2); }
+                    75% { transform: rotate(270deg) scale(1.1); }
+                    100% { transform: rotate(360deg) scale(1); }
                 }
                 
-                @keyframes rainBounce {
-                    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-                    50% { transform: translate(-50%, -50%) translateY(-3px); }
+                @keyframes rainShake {
+                    0% { transform: translateY(0px) translateX(0px) scale(1); }
+                    25% { transform: translateY(-15px) translateX(-8px) scale(0.95); }
+                    50% { transform: translateY(-5px) translateX(8px) scale(1.05); }
+                    75% { transform: translateY(-15px) translateX(-5px) scale(0.95); }
+                    100% { transform: translateY(0px) translateX(0px) scale(1); }
                 }
                 
-                @keyframes snowFloat {
-                    0%, 100% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); }
-                    50% { transform: translate(-50%, -50%) translateY(-5px) rotate(180deg); }
+                @keyframes snowSpin {
+                    0% { transform: rotate(0deg) scale(1) translateY(0px); }
+                    16.6% { transform: rotate(60deg) scale(1.05) translateY(-5px); }
+                    33.3% { transform: rotate(120deg) scale(1.1) translateY(-10px); }
+                    50% { transform: rotate(180deg) scale(1.2) translateY(-15px); }
+                    66.6% { transform: rotate(240deg) scale(1.1) translateY(-10px); }
+                    83.3% { transform: rotate(300deg) scale(1.05) translateY(-5px); }
+                    100% { transform: rotate(360deg) scale(1) translateY(0px); }
                 }
                 
-                @keyframes stormFlash {
-                    0%, 90%, 100% { opacity: 0.35; }
-                    5%, 10% { opacity: 0.55; }
+                @keyframes stormShake {
+                    0% { transform: scale(1) rotate(0deg) translateX(0px); }
+                    10% { transform: scale(1.4) rotate(-3deg) translateX(-5px); }
+                    20% { transform: scale(0.9) rotate(2deg) translateX(5px); }
+                    30% { transform: scale(1.3) rotate(-2deg) translateX(-3px); }
+                    40% { transform: scale(1.1) rotate(1deg) translateX(3px); }
+                    50% { transform: scale(1.5) rotate(-4deg) translateX(-7px); }
+                    60% { transform: scale(0.8) rotate(3deg) translateX(7px); }
+                    70% { transform: scale(1.2) rotate(-1deg) translateX(-2px); }
+                    80% { transform: scale(1) rotate(0deg) translateX(2px); }
+                    90% { transform: scale(1.3) rotate(-2deg) translateX(-4px); }
+                    100% { transform: scale(1) rotate(0deg) translateX(0px); }
                 }
                 
                 @keyframes cloudFloat {
-                    0%, 100% { transform: translate(-50%, -50%) translateX(0); }
-                    50% { transform: translate(-50%, -50%) translateX(3px); }
+                    0% { transform: translateX(-25px) translateY(0px) scale(1); }
+                    25% { transform: translateX(-10px) translateY(-8px) scale(1.05); }
+                    50% { transform: translateX(25px) translateY(-5px) scale(1.1); }
+                    75% { transform: translateX(10px) translateY(-8px) scale(1.05); }
+                    100% { transform: translateX(-25px) translateY(0px) scale(1); }
                 }
                 
-                @keyframes fogWave {
-                    0%, 100% { opacity: 0.35; }
-                    50% { opacity: 0.20; }
+                @keyframes fogPulse {
+                    0% { transform: scale(1); opacity: 1; }
+                    25% { transform: scale(1.1); opacity: 0.7; }
+                    50% { transform: scale(1.3); opacity: 0.4; }
+                    75% { transform: scale(1.1); opacity: 0.7; }
+                    100% { transform: scale(1); opacity: 1; }
                 }
                 
                 /* Weather Animations - moved to bottom 40% */
@@ -692,7 +705,9 @@ class FlippyWeatherTesting extends LitElement {
             </style>
             <ha-card>
                 <div class="flippy-container ${weatherAnimationClass}">
-                    ${this.getAnimatedWeatherIconBackground(weatherData.condition)}
+                    <!-- Large animated weather icon background -->
+                    <div class="weather-icon-large ${this.getWeatherAnimationClass(weatherData.condition)}">${this.getWeatherEmoji(weatherData.condition)}</div>
+                    
                     <div class="top-section">
                         <div class="htc-clock">
                             <div class="flip-card">
@@ -757,4 +772,4 @@ class FlippyWeatherTesting extends LitElement {
     }
 }
 
-customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
+customElements.define("flippyweather-clock-testing", FlippyWeatherTesting
