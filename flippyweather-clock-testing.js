@@ -524,14 +524,15 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .temperature-overlay {
-                    font-size: 1.8em;
+                    font-size: 8em;
                     font-weight: bold;
                     color: white;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
                     background: rgba(0,0,0,0.4);
-                    padding: 4px 12px;
-                    border-radius: 15px;
+                    padding: 8px 20px;
+                    border-radius: 25px;
                     backdrop-filter: blur(5px);
+                    line-height: 0.8;
                 }
                 
                 .bottom-section {
