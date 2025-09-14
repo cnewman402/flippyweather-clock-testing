@@ -199,11 +199,7 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     getWeatherFromEntity() {
-        console.log('Getting weather from entity, hass:', !!this.hass);
-        console.log('Weather entity config:', this._config.weather_entity);
-        
         if (!this.hass || !this._config.weather_entity) {
-            console.log('No hass or weather entity configured');
             return {
                 temperature: '--',
                 condition: 'Unknown',
@@ -213,10 +209,7 @@ class FlippyWeatherTesting extends LitElement {
         }
 
         const entity = this.hass.states[this._config.weather_entity];
-        console.log('Weather entity:', entity);
-        
         if (!entity) {
-            console.log('Weather entity not found');
             return {
                 temperature: '--',
                 condition: 'Entity not found',
@@ -225,13 +218,13 @@ class FlippyWeatherTesting extends LitElement {
             };
         }
 
+        // Debug: Log all attributes to see what's available
+        console.log('All weather entity attributes:', Object.keys(entity.attributes));
+        console.log('Full attributes object:', entity.attributes);
+
         const temperature = entity.attributes.temperature || '--';
         const condition = entity.state || 'Unknown';
         const forecast = entity.attributes.forecast || [];
-        
-        console.log('Temperature:', temperature);
-        console.log('Condition:', condition);
-        console.log('Raw forecast from entity:', forecast);
         
         // Use temperature as-is from Home Assistant (it's already in the correct unit)
         const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
