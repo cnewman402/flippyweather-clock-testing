@@ -665,8 +665,11 @@ class FlippyWeatherTesting extends LitElement {
                         </div>
                     </div>
                     
-                    <div class="bottom-section">
+                    <div class="middle-section">
                         <div class="condition">${weatherData.condition}</div>
+                    </div>
+                    
+                    <div class="bottom-section">
                         ${this.renderForecast(weatherData.forecast)}
                     </div>
                 </div>
