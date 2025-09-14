@@ -301,7 +301,7 @@ class FlippyWeatherTesting extends LitElement {
                         <div class="forecast-item">
                             <div class="forecast-day">${name}</div>
                             <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
-                            <div class="forecast-temp">${convertedTemp}°</div>
+                            <div class="forecast-temp">${convertedTemp}°${this.getTemperatureUnit()}</div>
                         </div>
                     `;
                 })}
