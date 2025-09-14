@@ -293,6 +293,7 @@ class FlippyWeatherTesting extends LitElement {
             <div class="forecast-container">
                 ${forecast.map(period => {
                     const temp = period.temperature || period.templow || '--';
+                    const convertedTemp = this.convertTemperature(temp, this._config.temperature_unit);
                     const condition = period.condition || period.text || 'Unknown';
                     const name = period.datetime ? new Date(period.datetime).toLocaleDateString('en-US', { weekday: 'short' }) : 'N/A';
                     
@@ -300,7 +301,7 @@ class FlippyWeatherTesting extends LitElement {
                         <div class="forecast-item">
                             <div class="forecast-day">${name}</div>
                             <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
-                            <div class="forecast-temp">${temp}°</div>
+                            <div class="forecast-temp">${convertedTemp}°</div>
                         </div>
                     `;
                 })}
