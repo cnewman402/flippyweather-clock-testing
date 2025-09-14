@@ -772,4 +772,4 @@ class FlippyWeatherTesting extends LitElement {
     }
 }
 
-customElements.define("flippyweather-clock-testing", FlippyWeatherTesting
+customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
