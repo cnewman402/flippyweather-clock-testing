@@ -83,11 +83,11 @@ const weatherDefaults = {
     temperature_unit: 'fahrenheit'
 };
 
-const flippyVersion = "3.0.0-testing";
+const flippyVersion = "3.0.0";
 
-console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
+console.info("%c 🌤️ FlippyWeather Clock %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
-class FlippyWeatherTesting extends LitElement {
+class FlippyWeatherClock extends LitElement {
     constructor() {
         super();
         this.weatherData = null;
@@ -294,47 +294,27 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     renderForecast(forecast) {
-        // Debug: Always show forecast container to test
+        // Only render if we have real forecast data
+        if (!forecast || forecast.length === 0) {
+            return html``;
+        }
+
         return html`
             <div class="forecast-container">
-                ${forecast && forecast.length > 0 
-                    ? forecast.map(period => {
-                        const temp = period.temperature || period.templow || '--';
-                        const displayTemp = temp === '--' ? '--' : Math.round(temp);
-                        const condition = period.condition || period.text || 'Unknown';
-                        const name = period.datetime ? new Date(period.datetime).toLocaleDateString('en-US', { weekday: 'short' }) : 'N/A';
-                        
-                        return html`
-                            <div class="forecast-item">
-                                <div class="forecast-day">${name}</div>
-                                <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
-                                <div class="forecast-temp">${displayTemp}°${this.getTemperatureUnit()}</div>
-                            </div>
-                        `;
-                    })
-                    : html`
+                ${forecast.map(period => {
+                    const temp = period.temperature || period.templow || '--';
+                    const displayTemp = temp === '--' ? '--' : Math.round(temp);
+                    const condition = period.condition || period.text || 'Unknown';
+                    const name = period.datetime ? new Date(period.datetime).toLocaleDateString('en-US', { weekday: 'short' }) : 'N/A';
+                    
+                    return html`
                         <div class="forecast-item">
-                            <div class="forecast-day">Mon</div>
-                            <div class="forecast-icon">🌤️</div>
-                            <div class="forecast-temp">75°F</div>
+                            <div class="forecast-day">${name}</div>
+                            <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
+                            <div class="forecast-temp">${displayTemp}°${this.getTemperatureUnit()}</div>
                         </div>
-                        <div class="forecast-item">
-                            <div class="forecast-day">Tue</div>
-                            <div class="forecast-icon">☀️</div>
-                            <div class="forecast-temp">78°F</div>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="forecast-day">Wed</div>
-                            <div class="forecast-icon">⛅</div>
-                            <div class="forecast-temp">72°F</div>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="forecast-day">Thu</div>
-                            <div class="forecast-icon">🌧️</div>
-                            <div class="forecast-temp">68°F</div>
-                        </div>
-                    `
-                }
+                    `;
+                })}
             </div>
         `;
     }
@@ -479,7 +459,7 @@ class FlippyWeatherTesting extends LitElement {
                     justify-content: space-between;
                     position: relative;
                     z-index: 2;
-                    height: 60%;
+                    height: 50%;
                 }
                 
                 .htc-clock {
@@ -562,23 +542,34 @@ class FlippyWeatherTesting extends LitElement {
                     text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
                 }
                 
+                .middle-section {
+                    position: relative;
+                    z-index: 10;
+                    text-align: center;
+                    height: 20%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
+                
+                .condition {
+                    font-size: 1.2em;
+                    font-weight: bold;
+                    opacity: 1;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                    color: white;
+                }
+                
                 .bottom-section {
                     position: relative;
                     z-index: 10;
                     text-align: center;
-                    height: 40%;
+                    height: 30%;
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     padding-top: 5px;
-                    background: rgba(255, 0, 0, 0.3);
-                }
-                
-                .condition {
-                    font-size: 0.8em;
-                    opacity: 0.9;
-                    margin-bottom: 3px;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
                 }
                 
                 .forecast-container {
@@ -587,14 +578,15 @@ class FlippyWeatherTesting extends LitElement {
                     gap: 6px;
                     margin-top: 2px;
                     flex-wrap: nowrap;
-                    background: rgba(0, 255, 0, 0.3);
+                    background: rgba(255, 255, 255, 0.2);
                     padding: 5px;
-                    border-radius: 5px;
+                    border-radius: 8px;
+                    backdrop-filter: blur(5px);
                 }
                 
                 .forecast-item {
                     text-align: center;
-                    background: rgba(0, 0, 255, 0.5);
+                    background: rgba(255, 255, 255, 0.3);
                     border-radius: 6px;
                     padding: 4px;
                     min-width: 40px;
@@ -602,6 +594,7 @@ class FlippyWeatherTesting extends LitElement {
                     max-width: 55px;
                     color: white;
                     font-weight: bold;
+                    backdrop-filter: blur(3px);
                 }
                 
                 .forecast-day {
@@ -691,4 +684,4 @@ class FlippyWeatherTesting extends LitElement {
     }
 }
 
-customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
+customElements.define("flippyweather-clock", FlippyWeatherClock);
