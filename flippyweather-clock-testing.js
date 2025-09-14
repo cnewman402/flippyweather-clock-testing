@@ -646,7 +646,6 @@ class FlippyWeatherTesting extends LitElement {
                     <div class="bottom-section">
                         <div class="condition">${weatherData.condition}</div>
                         ${this.renderForecast(weatherData.forecast)}
-                        <div class="version-info">FlippyWeather Testing v${flippyVersion}</div>
                     </div>
                 </div>
             </ha-card>
