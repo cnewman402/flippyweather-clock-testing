@@ -564,39 +564,44 @@ class FlippyWeatherTesting extends LitElement {
                 
                 .bottom-section {
                     position: relative;
-                    z-index: 2;
+                    z-index: 10;
                     text-align: center;
                     height: 40%;
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     padding-top: 5px;
+                    background: rgba(255, 0, 0, 0.3);
                 }
                 
                 .condition {
                     font-size: 0.8em;
                     opacity: 0.9;
-                    margin-bottom: 5px;
+                    margin-bottom: 3px;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
                 }
                 
                 .forecast-container {
                     display: flex;
                     justify-content: center;
-                    gap: 8px;
+                    gap: 6px;
                     margin-top: 2px;
                     flex-wrap: nowrap;
+                    background: rgba(0, 255, 0, 0.3);
+                    padding: 5px;
+                    border-radius: 5px;
                 }
                 
                 .forecast-item {
                     text-align: center;
-                    background: rgba(255,255,255,0.15);
+                    background: rgba(0, 0, 255, 0.5);
                     border-radius: 6px;
                     padding: 4px;
-                    min-width: 45px;
+                    min-width: 40px;
                     flex: 1;
-                    max-width: 60px;
-                    backdrop-filter: blur(5px);
+                    max-width: 55px;
+                    color: white;
+                    font-weight: bold;
                 }
                 
                 .forecast-day {
