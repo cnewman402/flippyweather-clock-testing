@@ -202,7 +202,6 @@ class FlippyWeatherTesting extends LitElement {
         if (unit === 'celsius') {
             return Math.round(tempCelsius);
         } else {
-            // Convert to Fahrenheit
             const fahrenheit = (tempCelsius * 9/5) + 32;
             return Math.round(fahrenheit);
         }
@@ -232,7 +231,6 @@ class FlippyWeatherTesting extends LitElement {
         const condition = entity.state || 'Unknown';
         const forecast = entity.attributes.forecast || [];
         
-        // Convert temperature based on user preference
         const convertedTemp = this.convertTemperature(temperature, this._config.temperature_unit);
         
         return {
@@ -352,6 +350,7 @@ class FlippyWeatherTesting extends LitElement {
         
         const weatherIcon = this.getWeatherEmoji(weatherData.condition);
         const iconClass = this.getWeatherIconClass(weatherData.condition);
+        const tempUnit = this.getTemperatureUnit();
 
         return html`
             <style>
@@ -642,7 +641,7 @@ class FlippyWeatherTesting extends LitElement {
                         </div>
                         
                         <div class="weather-display">
-                            <div class="temperature-overlay">${weatherData.temperature}°${this.getTemperatureUnit()}</div>
+                            <div class="temperature-overlay">${weatherData.temperature}°${tempUnit}</div>
                         </div>
                     </div>
                     
