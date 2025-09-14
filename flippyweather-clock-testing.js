@@ -405,8 +405,8 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 @keyframes stormFlash {
-                    0%, 90%, 100% { opacity: 0.15; }
-                    5%, 10% { opacity: 0.25; }
+                    0%, 90%, 100% { opacity: 0.35; }
+                    5%, 10% { opacity: 0.55; }
                 }
                 
                 @keyframes cloudFloat {
@@ -415,8 +415,8 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 @keyframes fogWave {
-                    0%, 100% { opacity: 0.15; }
-                    50% { opacity: 0.08; }
+                    0%, 100% { opacity: 0.35; }
+                    50% { opacity: 0.20; }
                 }
                 
                 /* Weather Animations - moved to bottom 40% */
