@@ -82,11 +82,11 @@ const weatherDefaults = {
     weather_entity: null
 };
 
-const flippyVersion = "3.0.0";
+const flippyVersion = "3.0.0-testing";
 
-console.info("%c 🌤️ FlippyWeather Clock %c ".concat(flippyVersion, " "), "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
+console.info("%c 🌤️ FlippyWeather Clock Testing %c ".concat(flippyVersion, " "), "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
-class FlippyWeather extends LitElement {
+class FlippyWeatherTesting extends LitElement {
     constructor() {
         super();
         this.weatherData = null;
@@ -736,7 +736,7 @@ class FlippyWeather extends LitElement {
                     <div class="bottom-section">
                         <div class="condition">${weatherData.condition}</div>
                         ${this.renderForecast(weatherData.forecast)}
-                        <div class="version-info">FlippyWeather v${flippyVersion}</div>
+                        <div class="version-info">FlippyWeather Testing v${flippyVersion}</div>
                     </div>
                 </div>
             </ha-card>
@@ -757,4 +757,4 @@ class FlippyWeather extends LitElement {
     }
 }
 
-customElements.define("flippyweather-card-testing", FlippyWeather);
+customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
