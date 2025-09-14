@@ -1,3 +1,5 @@
+console.log("FlippyWeather Testing script starting to load");
+
 import "https://unpkg.com/wired-card@0.8.1/wired-card.js?module";
 import "https://unpkg.com/wired-toggle@0.8.0/wired-toggle.js?module";
 import {
