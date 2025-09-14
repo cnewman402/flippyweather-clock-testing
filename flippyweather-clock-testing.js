@@ -294,9 +294,18 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     renderForecast(forecast) {
+        // Debug logging
+        console.log('Forecast data:', forecast);
+        console.log('Forecast length:', forecast ? forecast.length : 'null/undefined');
+        
         // Only render forecast if we have real data
         if (!forecast || forecast.length === 0) {
-            return html``;
+            console.log('No forecast data available');
+            return html`
+                <div class="forecast-container">
+                    <div style="color: white; font-size: 0.8em; padding: 5px;">No forecast data</div>
+                </div>
+            `;
         }
 
         return html`
