@@ -548,46 +548,50 @@ class FlippyWeatherTesting extends LitElement {
                     height: 40%;
                     display: flex;
                     flex-direction: column;
-                    justify-content: center;
+                    justify-content: flex-start;
+                    padding-top: 5px;
                 }
                 
                 .condition {
-                    font-size: 0.9em;
+                    font-size: 0.8em;
                     opacity: 0.9;
-                    margin-bottom: 8px;
+                    margin-bottom: 5px;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
                 }
                 
                 .forecast-container {
                     display: flex;
                     justify-content: center;
-                    gap: 10px;
-                    margin-top: 5px;
+                    gap: 8px;
+                    margin-top: 2px;
+                    flex-wrap: nowrap;
                 }
                 
                 .forecast-item {
                     text-align: center;
-                    background: rgba(255,255,255,0.1);
-                    border-radius: 8px;
-                    padding: 5px;
-                    min-width: 50px;
+                    background: rgba(255,255,255,0.15);
+                    border-radius: 6px;
+                    padding: 4px;
+                    min-width: 45px;
+                    flex: 1;
+                    max-width: 60px;
                     backdrop-filter: blur(5px);
                 }
                 
                 .forecast-day {
-                    font-size: 0.7em;
+                    font-size: 0.65em;
                     opacity: 0.9;
                     font-weight: bold;
-                    margin-bottom: 2px;
+                    margin-bottom: 1px;
                 }
                 
                 .forecast-icon {
-                    font-size: 1.5em;
-                    margin: 2px 0;
+                    font-size: 1.2em;
+                    margin: 1px 0;
                 }
                 
                 .forecast-temp {
-                    font-size: 0.8em;
+                    font-size: 0.7em;
                     font-weight: bold;
                 }
             </style>
