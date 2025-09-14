@@ -521,18 +521,20 @@ class FlippyWeatherTesting extends LitElement {
                     display: flex;
                     align-items: center;
                     position: relative;
+                    height: 100%;
                 }
                 
                 .temperature-overlay {
-                    font-size: 8em;
+                    font-size: 180px;
                     font-weight: bold;
                     color: white;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-                    background: rgba(0,0,0,0.4);
-                    padding: 8px 20px;
-                    border-radius: 25px;
-                    backdrop-filter: blur(5px);
-                    line-height: 0.8;
+                    text-shadow: 4px 4px 8px rgba(0,0,0,0.9);
+                    background: rgba(0,0,0,0.3);
+                    padding: 10px 30px;
+                    border-radius: 30px;
+                    backdrop-filter: blur(10px);
+                    line-height: 0.7;
+                    font-family: 'Arial', sans-serif;
                 }
                 
                 .bottom-section {
