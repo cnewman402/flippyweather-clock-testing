@@ -370,27 +370,27 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .weather-icon-large.sun {
-                    animation: sunSpin 2s linear infinite;
+                    animation: sunSpin 6s linear infinite;
                 }
                 
                 .weather-icon-large.rain {
-                    animation: rainShake 0.5s ease-in-out infinite;
+                    animation: rainShake 2s ease-in-out infinite;
                 }
                 
                 .weather-icon-large.snow {
-                    animation: snowSpin 3s ease-in-out infinite;
+                    animation: snowSpin 8s ease-in-out infinite;
                 }
                 
                 .weather-icon-large.storm {
-                    animation: stormShake 0.3s ease-in-out infinite;
+                    animation: stormShake 1.5s ease-in-out infinite;
                 }
                 
                 .weather-icon-large.cloud {
-                    animation: cloudFloat 2s ease-in-out infinite;
+                    animation: cloudFloat 6s ease-in-out infinite;
                 }
                 
                 .weather-icon-large.fog {
-                    animation: fogPulse 1s ease-in-out infinite;
+                    animation: fogPulse 4s ease-in-out infinite;
                 }
                 
                 @keyframes sunSpin {
