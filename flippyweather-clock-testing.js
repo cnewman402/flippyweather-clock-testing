@@ -79,7 +79,8 @@ const weatherDefaults = {
     am_pm: false,
     animated_background: true,
     theme: 'default',
-    weather_entity: null
+    weather_entity: null,
+    temperature_unit: 'fahrenheit'
 };
 
 const flippyVersion = "3.0.0-testing";
@@ -102,7 +103,8 @@ class FlippyWeatherTesting extends LitElement {
             location_name: 'Home Assistant Location',
             animated_background: true,
             theme: 'default',
-            weather_entity: 'weather.home'
+            weather_entity: 'weather.home',
+            temperature_unit: 'fahrenheit'
         };
     }
 
@@ -190,6 +192,22 @@ class FlippyWeatherTesting extends LitElement {
         }, 300);
     }
 
+    getTemperatureUnit() {
+        return this._config.temperature_unit === 'celsius' ? 'C' : 'F';
+    }
+
+    convertTemperature(tempCelsius, unit) {
+        if (!tempCelsius || tempCelsius === '--') return '--';
+        
+        if (unit === 'celsius') {
+            return Math.round(tempCelsius);
+        } else {
+            // Convert to Fahrenheit
+            const fahrenheit = (tempCelsius * 9/5) + 32;
+            return Math.round(fahrenheit);
+        }
+    }
+
     getWeatherFromEntity() {
         if (!this.hass || !this._config.weather_entity) {
             return {
@@ -214,8 +232,11 @@ class FlippyWeatherTesting extends LitElement {
         const condition = entity.state || 'Unknown';
         const forecast = entity.attributes.forecast || [];
         
+        // Convert temperature based on user preference
+        const convertedTemp = this.convertTemperature(temperature, this._config.temperature_unit);
+        
         return {
-            temperature: Math.round(temperature),
+            temperature: convertedTemp,
             condition: condition,
             icon: this.getWeatherEmoji(condition),
             forecast: forecast.slice(0, 4)
@@ -621,7 +642,7 @@ class FlippyWeatherTesting extends LitElement {
                         </div>
                         
                         <div class="weather-display">
-                            <div class="temperature-overlay">${weatherData.temperature}°</div>
+                            <div class="temperature-overlay">${weatherData.temperature}°${this.getTemperatureUnit()}</div>
                         </div>
                     </div>
                     
