@@ -356,17 +356,9 @@ class FlippyWeatherTesting extends LitElement {
                     font-size: 150px;
                     z-index: 1;
                     pointer-events: none;
-                    color: #000000;
-                    text-shadow: 
-                        3px 3px 0px #ffffff,
-                        -3px -3px 0px #ffffff,
-                        3px -3px 0px #ffffff,
-                        -3px 3px 0px #ffffff,
-                        0px 3px 0px #ffffff,
-                        3px 0px 0px #ffffff,
-                        0px -3px 0px #ffffff,
-                        -3px 0px 0px #ffffff;
                     line-height: 1;
+                    filter: none;
+                    text-shadow: none;
                 }
                 
                 .weather-icon-large.sun {
@@ -590,13 +582,6 @@ class FlippyWeatherTesting extends LitElement {
                 .forecast-temp {
                     font-size: 0.8em;
                     font-weight: bold;
-                }
-                
-                .version-info {
-                    font-size: 0.6em;
-                    opacity: 0.7;
-                    margin-top: 5px;
-                    text-align: center;
                 }
             </style>
             <ha-card>
