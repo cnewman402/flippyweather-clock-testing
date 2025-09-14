@@ -196,14 +196,23 @@ class FlippyWeatherTesting extends LitElement {
         return this._config.temperature_unit === 'celsius' ? 'C' : 'F';
     }
 
-    convertTemperature(tempCelsius, unit) {
-        if (!tempCelsius || tempCelsius === '--') return '--';
+    convertTemperature(temperature, unit) {
+        if (!temperature || temperature === '--') return '--';
         
+        // Check if Home Assistant is already providing the temperature in the desired unit
+        // Most HA installations provide temperature in the user's preferred unit already
         if (unit === 'celsius') {
-            return Math.round(tempCelsius);
+            // If user wants Celsius and HA temp seems like Fahrenheit (>50), convert F to C
+            if (temperature > 50) {
+                return Math.round((temperature - 32) * 5/9);
+            }
+            return Math.round(temperature);
         } else {
-            const fahrenheit = (tempCelsius * 9/5) + 32;
-            return Math.round(fahrenheit);
+            // If user wants Fahrenheit and HA temp seems like Celsius (<50), convert C to F
+            if (temperature < 50) {
+                return Math.round((temperature * 9/5) + 32);
+            }
+            return Math.round(temperature);
         }
     }
 
