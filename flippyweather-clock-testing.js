@@ -604,7 +604,6 @@ class FlippyWeatherTesting extends LitElement {
                         ${this._config.show_date ? html`
                             <div class="date">${now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
                         ` : ''}
-                        <div class="time">${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
                     </div>
                 </div>
             </ha-card>
