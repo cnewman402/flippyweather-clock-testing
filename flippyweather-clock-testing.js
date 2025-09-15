@@ -352,86 +352,197 @@ class FlippyWeatherTesting extends LitElement {
                     line-height: 1;
                     filter: none;
                     text-shadow: none;
+                    transform: translateX(-100vw);
+                    animation: flyInAndSpin 6s ease-out forwards;
                 }
                 
                 .weather-icon-large.sun {
-                    animation: sunSpin 6s linear infinite;
+                    animation: flyInAndSpinSun 6s ease-out forwards;
                 }
                 
                 .weather-icon-large.rain {
-                    animation: rainShake 2s ease-in-out infinite;
+                    animation: flyInAndSpinRain 6s ease-out forwards;
                 }
                 
                 .weather-icon-large.snow {
-                    animation: snowSpin 8s ease-in-out infinite;
+                    animation: flyInAndSpinSnow 8s ease-out forwards;
                 }
                 
                 .weather-icon-large.storm {
-                    animation: stormShake 1.5s ease-in-out infinite;
+                    animation: flyInAndSpinStorm 5s ease-out forwards;
                 }
                 
                 .weather-icon-large.cloud {
-                    animation: cloudFloat 6s ease-in-out infinite;
+                    animation: flyInAndSpinCloud 7s ease-out forwards;
                 }
                 
                 .weather-icon-large.fog {
-                    animation: fogPulse 4s ease-in-out infinite;
+                    animation: flyInAndSpinFog 6s ease-out forwards;
                 }
                 
-                @keyframes sunSpin {
-                    0% { transform: rotate(0deg) scale(1); }
-                    25% { transform: rotate(90deg) scale(1.1); }
-                    50% { transform: rotate(180deg) scale(1.2); }
-                    75% { transform: rotate(270deg) scale(1.1); }
-                    100% { transform: rotate(360deg) scale(1); }
+                @keyframes flyInAndSpin {
+                    0% { 
+                        transform: translateX(-100vw) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) rotate(360deg) scale(1);
+                        opacity: 1;
+                    }
+                    40% { 
+                        transform: translateX(0) rotate(720deg) scale(1.1);
+                    }
+                    60% { 
+                        transform: translateX(0) rotate(1080deg) scale(1);
+                    }
+                    80% { 
+                        transform: translateX(0) rotate(1440deg) scale(1.05);
+                    }
+                    100% { 
+                        transform: translateX(0) rotate(1800deg) scale(1);
+                    }
                 }
                 
-                @keyframes rainShake {
-                    0% { transform: translateY(0px) translateX(0px) scale(1); }
-                    25% { transform: translateY(-15px) translateX(-8px) scale(0.95); }
-                    50% { transform: translateY(-5px) translateX(8px) scale(1.05); }
-                    75% { transform: translateY(-15px) translateX(-5px) scale(0.95); }
-                    100% { transform: translateY(0px) translateX(0px) scale(1); }
+                @keyframes flyInAndSpinSun {
+                    0% { 
+                        transform: translateX(-100vw) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) rotate(360deg) scale(1);
+                        opacity: 1;
+                    }
+                    40% { 
+                        transform: translateX(0) rotate(720deg) scale(1.2);
+                    }
+                    60% { 
+                        transform: translateX(0) rotate(1080deg) scale(1.1);
+                    }
+                    80% { 
+                        transform: translateX(0) rotate(1440deg) scale(1.15);
+                    }
+                    100% { 
+                        transform: translateX(0) rotate(1800deg) scale(1);
+                    }
                 }
                 
-                @keyframes snowSpin {
-                    0% { transform: rotate(0deg) scale(1) translateY(0px); }
-                    16.6% { transform: rotate(60deg) scale(1.05) translateY(-5px); }
-                    33.3% { transform: rotate(120deg) scale(1.1) translateY(-10px); }
-                    50% { transform: rotate(180deg) scale(1.2) translateY(-15px); }
-                    66.6% { transform: rotate(240deg) scale(1.1) translateY(-10px); }
-                    83.3% { transform: rotate(300deg) scale(1.05) translateY(-5px); }
-                    100% { transform: rotate(360deg) scale(1) translateY(0px); }
+                @keyframes flyInAndSpinRain {
+                    0% { 
+                        transform: translateX(-100vw) translateY(0px) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) translateY(-10px) rotate(360deg) scale(1);
+                        opacity: 1;
+                    }
+                    40% { 
+                        transform: translateX(0) translateY(-5px) rotate(720deg) scale(1.05);
+                    }
+                    60% { 
+                        transform: translateX(0) translateY(-15px) rotate(1080deg) scale(0.95);
+                    }
+                    80% { 
+                        transform: translateX(0) translateY(-8px) rotate(1440deg) scale(1.02);
+                    }
+                    100% { 
+                        transform: translateX(0) translateY(0px) rotate(1800deg) scale(1);
+                    }
                 }
                 
-                @keyframes stormShake {
-                    0% { transform: scale(1) rotate(0deg) translateX(0px); }
-                    10% { transform: scale(1.4) rotate(-3deg) translateX(-5px); }
-                    20% { transform: scale(0.9) rotate(2deg) translateX(5px); }
-                    30% { transform: scale(1.3) rotate(-2deg) translateX(-3px); }
-                    40% { transform: scale(1.1) rotate(1deg) translateX(3px); }
-                    50% { transform: scale(1.5) rotate(-4deg) translateX(-7px); }
-                    60% { transform: scale(0.8) rotate(3deg) translateX(7px); }
-                    70% { transform: scale(1.2) rotate(-1deg) translateX(-2px); }
-                    80% { transform: scale(1) rotate(0deg) translateX(2px); }
-                    90% { transform: scale(1.3) rotate(-2deg) translateX(-4px); }
-                    100% { transform: scale(1) rotate(0deg) translateX(0px); }
+                @keyframes flyInAndSpinSnow {
+                    0% { 
+                        transform: translateX(-100vw) translateY(0px) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) translateY(-5px) rotate(360deg) scale(1.05);
+                        opacity: 1;
+                    }
+                    40% { 
+                        transform: translateX(0) translateY(-10px) rotate(720deg) scale(1.1);
+                    }
+                    60% { 
+                        transform: translateX(0) translateY(-15px) rotate(1080deg) scale(1.2);
+                    }
+                    80% { 
+                        transform: translateX(0) translateY(-10px) rotate(1440deg) scale(1.1);
+                    }
+                    100% { 
+                        transform: translateX(0) translateY(0px) rotate(1800deg) scale(1);
+                    }
                 }
                 
-                @keyframes cloudFloat {
-                    0% { transform: translateX(-25px) translateY(0px) scale(1); }
-                    25% { transform: translateX(-10px) translateY(-8px) scale(1.05); }
-                    50% { transform: translateX(25px) translateY(-5px) scale(1.1); }
-                    75% { transform: translateX(10px) translateY(-8px) scale(1.05); }
-                    100% { transform: translateX(-25px) translateY(0px) scale(1); }
+                @keyframes flyInAndSpinStorm {
+                    0% { 
+                        transform: translateX(-100vw) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) rotate(360deg) scale(1.4);
+                        opacity: 1;
+                    }
+                    40% { 
+                        transform: translateX(0) rotate(720deg) scale(0.9);
+                    }
+                    60% { 
+                        transform: translateX(0) rotate(1080deg) scale(1.5);
+                    }
+                    80% { 
+                        transform: translateX(0) rotate(1440deg) scale(1.1);
+                    }
+                    100% { 
+                        transform: translateX(0) rotate(1800deg) scale(1);
+                    }
                 }
                 
-                @keyframes fogPulse {
-                    0% { transform: scale(1); opacity: 1; }
-                    25% { transform: scale(1.1); opacity: 0.7; }
-                    50% { transform: scale(1.3); opacity: 0.4; }
-                    75% { transform: scale(1.1); opacity: 0.7; }
-                    100% { transform: scale(1); opacity: 1; }
+                @keyframes flyInAndSpinCloud {
+                    0% { 
+                        transform: translateX(-100vw) translateY(0px) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) translateY(-8px) rotate(360deg) scale(1.05);
+                        opacity: 1;
+                    }
+                    40% { 
+                        transform: translateX(0) translateY(-5px) rotate(720deg) scale(1.1);
+                    }
+                    60% { 
+                        transform: translateX(0) translateY(-8px) rotate(1080deg) scale(1.05);
+                    }
+                    80% { 
+                        transform: translateX(0) translateY(-3px) rotate(1440deg) scale(1.02);
+                    }
+                    100% { 
+                        transform: translateX(0) translateY(0px) rotate(1800deg) scale(1);
+                    }
+                }
+                
+                @keyframes flyInAndSpinFog {
+                    0% { 
+                        transform: translateX(-100vw) rotate(0deg) scale(0.5);
+                        opacity: 0;
+                    }
+                    20% { 
+                        transform: translateX(0) rotate(360deg) scale(1.1);
+                        opacity: 0.7;
+                    }
+                    40% { 
+                        transform: translateX(0) rotate(720deg) scale(1.3);
+                        opacity: 0.4;
+                    }
+                    60% { 
+                        transform: translateX(0) rotate(1080deg) scale(1.1);
+                        opacity: 0.7;
+                    }
+                    80% { 
+                        transform: translateX(0) rotate(1440deg) scale(1.05);
+                        opacity: 0.8;
+                    }
+                    100% { 
+                        transform: translateX(0) rotate(1800deg) scale(1);
+                        opacity: 1;
+                    }
                 }
                 
                 /* Night mode styles */
