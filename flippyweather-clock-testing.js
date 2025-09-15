@@ -94,7 +94,7 @@ const weatherDefaults = {
     icon_opacity: 'medium'
 };
 
-const flippyVersion = "4.0.0-testing";
+const flippyVersion = "4.1.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -320,9 +320,30 @@ class FlippyWeatherTesting extends LitElement {
 
     getClockSize() {
         const sizes = {
-            small: { flip: '30px', height: '45px', font: '1.4em', separator: '2em' },
-            medium: { flip: '40px', height: '60px', font: '2em', separator: '2.5em' },
-            large: { flip: '50px', height: '75px', font: '2.5em', separator: '3em' }
+            small: { 
+                flip: '30px', 
+                height: '45px', 
+                font: '1.4em', 
+                separator: '2em' 
+            },
+            medium: { 
+                flip: '40px', 
+                height: '60px', 
+                font: '2em', 
+                separator: '2.5em' 
+            },
+            large: { 
+                flip: '55px', 
+                height: '80px', 
+                font: '3em', 
+                separator: '3.5em' 
+            },
+            'extra-large': { 
+                flip: '70px', 
+                height: '100px', 
+                font: '4em', 
+                separator: '4.5em' 
+            }
         };
         return sizes[this._config.clock_size] || sizes.medium;
     }
@@ -443,7 +464,7 @@ class FlippyWeatherTesting extends LitElement {
                     height: 100%;
                     backface-visibility: hidden;
                     background: rgba(255, 255, 255, 0.15);
-                    border-radius: clamp(4px, 0.8vw, 8px);
+                    border-radius: clamp(4px, 0.8vw, 12px);
                     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
                     display: flex;
                     align-items: center;
@@ -453,7 +474,7 @@ class FlippyWeatherTesting extends LitElement {
                     color: #ffffff;
                     font-family: 'Courier New', monospace;
                     border: 1px solid rgba(255, 255, 255, 0.2);
-                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.8)' : 'none'};
+                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.8)' : 'none'};
                     backdrop-filter: ${this._config.blur_background ? 'blur(5px)' : 'none'};
                 }
                 
@@ -461,8 +482,8 @@ class FlippyWeatherTesting extends LitElement {
                     font-size: ${clockSize.separator};
                     color: white;
                     animation: blink 2s infinite;
-                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
-                    margin: 0 clamp(2px, 0.5vw, 5px);
+                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.5)' : 'none'};
+                    margin: 0 clamp(2px, 0.5vw, 8px);
                     flex-shrink: 0;
                 }
                 
