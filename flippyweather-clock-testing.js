@@ -159,22 +159,48 @@ class FlippyWeatherTesting extends LitElement {
             console.log('Fetching forecast data via service...');
             const result = await this.hass.callService('weather', 'get_forecasts', {
                 entity_id: this._config.weather_entity,
-                type: 'daily',
-                return_response: true
+                type: 'daily'
             });
             
             console.log('Forecast service result:', result);
             
+            // The service should return forecast data directly
             if (result && result[this._config.weather_entity] && result[this._config.weather_entity].forecast) {
                 this.forecastData = result[this._config.weather_entity].forecast.slice(0, 4);
                 console.log('Successfully fetched forecast:', this.forecastData);
                 this.requestUpdate();
+            } else if (result && result.forecast) {
+                // Alternative response structure
+                this.forecastData = result.forecast.slice(0, 4);
+                console.log('Successfully fetched forecast (alt structure):', this.forecastData);
+                this.requestUpdate();
             } else {
-                console.log('No forecast data in service response');
-                this.forecastData = [];
+                console.log('No forecast data in service response, trying alternative approach...');
+                // Fall back to checking if the entity now has forecast data after the service call
+                await this.checkEntityForUpdatedForecast();
             }
         } catch (error) {
             console.error('Error fetching forecast:', error);
+            this.forecastData = [];
+        }
+    }
+
+    async checkEntityForUpdatedForecast() {
+        try {
+            // Wait a moment for the entity to update
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const entity = this.hass.states[this._config.weather_entity];
+            if (entity && entity.attributes.forecast && entity.attributes.forecast.length > 0) {
+                this.forecastData = entity.attributes.forecast.slice(0, 4);
+                console.log('Found forecast in updated entity attributes:', this.forecastData);
+                this.requestUpdate();
+            } else {
+                console.log('Still no forecast data available');
+                this.forecastData = [];
+            }
+        } catch (error) {
+            console.error('Error checking entity forecast:', error);
             this.forecastData = [];
         }
     }
