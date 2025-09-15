@@ -476,6 +476,25 @@ class FlippyWeatherTesting extends LitElement {
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
                     color: white;
                 }
+                
+                .date-time {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                
+                .date {
+                    font-size: 0.9em;
+                    color: white;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+                    margin-bottom: 2px;
+                }
+                
+                .time {
+                    font-size: 0.8em;
+                    color: white;
+                    opacity: 0.9;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+                }
             </style>
             <ha-card>
                 <div class="flippy-container ${weatherAnimationClass}">
@@ -522,7 +541,7 @@ class FlippyWeatherTesting extends LitElement {
                     </div>
                     
                     <div class="bottom-section">
-                        <div class="condition">${weatherData.condition}</div>
+                                                    <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
                     </div>
                 </div>
             </ha-card>
