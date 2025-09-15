@@ -95,7 +95,7 @@ const weatherDefaults = {
     date_size: 'medium'
 };
 
-const flippyVersion = "4.6.0-FINAL-testing";
+const flippyVersion = "4.7.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -420,10 +420,17 @@ class FlippyWeatherTesting extends LitElement {
                     overflow: hidden;
                     transition: background 1s ease-in-out;
                     display: flex;
+                    flex-direction: column;
+                    min-height: ${this._config.compact_mode ? '150px' : '200px'};
+                    padding-bottom: 5px;
+                }
+                
+                .main-content {
+                    display: flex;
                     flex-direction: ${this._config.compact_mode ? 'column' : 'row'};
                     align-items: ${this._config.compact_mode ? 'center' : 'center'};
                     justify-content: ${this._config.compact_mode ? 'center' : 'space-between'};
-                    min-height: ${this._config.compact_mode ? '150px' : '200px'};
+                    flex: 1;
                     gap: ${this._config.compact_mode ? '10px' : '0'};
                 }
                 
@@ -462,6 +469,15 @@ class FlippyWeatherTesting extends LitElement {
                     min-width: 0;
                     flex: 1;
                     overflow: hidden;
+                }
+                
+                .date-bottom {
+                    position: relative;
+                    z-index: 2;
+                    text-align: right;
+                    margin-top: auto;
+                    margin-bottom: 0;
+                    padding-top: 15px;
                 }
                 
                 .flip-card {
@@ -558,9 +574,6 @@ class FlippyWeatherTesting extends LitElement {
                     font-size: ${dateSize};
                     color: white;
                     text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
-                    text-align: right;
-                    margin-top: 10px;
-                    margin-bottom: 2px;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -569,7 +582,7 @@ class FlippyWeatherTesting extends LitElement {
 
                 /* Responsive adjustments for very narrow cards */
                 @container (max-width: 350px) {
-                    .flippy-container {
+                    .main-content {
                         flex-direction: column;
                         gap: 10px;
                         text-align: center;
@@ -580,7 +593,7 @@ class FlippyWeatherTesting extends LitElement {
                         text-align: center;
                     }
                     
-                    .date {
+                    .date-bottom {
                         text-align: center;
                     }
                     
@@ -620,49 +633,54 @@ class FlippyWeatherTesting extends LitElement {
                 <div class="flippy-container ${weatherAnimationClass} ${nightModeClass}">
                     <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
-                    <div class="left-section">
-                        <div class="flip-card">
-                            <div class="flip-card-inner" data-digit="firstHourDigit">
-                                <div class="flip-card-face">${hourStr[0]}</div>
+                    <div class="main-content">
+                        <div class="left-section">
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="firstHourDigit">
+                                    <div class="flip-card-face">${hourStr[0]}</div>
+                                </div>
                             </div>
+                            
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="secondHourDigit">
+                                    <div class="flip-card-face">${hourStr[1]}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="clock-separator">:</div>
+                            
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="firstMinuteDigit">
+                                    <div class="flip-card-face">${minuteStr[0]}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="secondMinuteDigit">
+                                    <div class="flip-card-face">${minuteStr[1]}</div>
+                                </div>
+                            </div>
+                            
+                            ${this._config.am_pm ? html`
+                                <div class="am-pm-indicator">
+                                    ${now.getHours() >= 12 ? 'PM' : 'AM'}
+                                </div>
+                            ` : ''}
                         </div>
                         
-                        <div class="flip-card">
-                            <div class="flip-card-inner" data-digit="secondHourDigit">
-                                <div class="flip-card-face">${hourStr[1]}</div>
-                            </div>
+                        <div class="right-section">
+                            <div class="temperature">${weatherData.temperature}°${tempUnit}</div>
+                            ${this._config.show_condition ? html`
+                                <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
+                            ` : ''}
                         </div>
-                        
-                        <div class="clock-separator">:</div>
-                        
-                        <div class="flip-card">
-                            <div class="flip-card-inner" data-digit="firstMinuteDigit">
-                                <div class="flip-card-face">${minuteStr[0]}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="flip-card">
-                            <div class="flip-card-inner" data-digit="secondMinuteDigit">
-                                <div class="flip-card-face">${minuteStr[1]}</div>
-                            </div>
-                        </div>
-                        
-                        ${this._config.am_pm ? html`
-                            <div class="am-pm-indicator">
-                                ${now.getHours() >= 12 ? 'PM' : 'AM'}
-                            </div>
-                        ` : ''}
                     </div>
                     
-                    <div class="right-section">
-                        <div class="temperature">${weatherData.temperature}°${tempUnit}</div>
-                        ${this._config.show_condition ? html`
-                            <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
-                        ` : ''}
-                        ${this._config.show_date ? html`
+                    ${this._config.show_date ? html`
+                        <div class="date-bottom">
                             <div class="date">${now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                        ` : ''}
-                    </div>
+                        </div>
+                    ` : ''}
                 </div>
             </ha-card>
         `;
