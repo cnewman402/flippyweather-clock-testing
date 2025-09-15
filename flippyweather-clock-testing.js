@@ -96,7 +96,6 @@ class FlippyWeatherTesting extends LitElement {
         this.oldTime = {};
         this.currentCondition = '';
         this.currentTemperature = '--';
-        this.forecastData = [];
     }
 
     static getStubConfig() {
@@ -130,78 +129,12 @@ class FlippyWeatherTesting extends LitElement {
         this.updateInterval = setInterval(() => {
             this.requestUpdate();
         }, 1000);
-        
-        // Fetch initial forecast data
-        this.fetchForecastData();
-        
-        // Update forecast data every 10 minutes
-        this.forecastInterval = setInterval(() => {
-            this.fetchForecastData();
-        }, 600000);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
-        }
-        if (this.forecastInterval) {
-            clearInterval(this.forecastInterval);
-        }
-    }
-
-    async fetchForecastData() {
-        if (!this.hass || !this._config.weather_entity) {
-            return;
-        }
-
-        try {
-            console.log('Fetching forecast data via service...');
-            const result = await this.hass.callService('weather', 'get_forecasts', {
-                entity_id: this._config.weather_entity,
-                type: 'daily'
-            });
-            
-            console.log('Forecast service result:', result);
-            
-            // The service should return forecast data directly
-            if (result && result[this._config.weather_entity] && result[this._config.weather_entity].forecast) {
-                this.forecastData = result[this._config.weather_entity].forecast.slice(0, 4);
-                console.log('Successfully fetched forecast:', this.forecastData);
-                this.requestUpdate();
-            } else if (result && result.forecast) {
-                // Alternative response structure
-                this.forecastData = result.forecast.slice(0, 4);
-                console.log('Successfully fetched forecast (alt structure):', this.forecastData);
-                this.requestUpdate();
-            } else {
-                console.log('No forecast data in service response, trying alternative approach...');
-                // Fall back to checking if the entity now has forecast data after the service call
-                await this.checkEntityForUpdatedForecast();
-            }
-        } catch (error) {
-            console.error('Error fetching forecast:', error);
-            this.forecastData = [];
-        }
-    }
-
-    async checkEntityForUpdatedForecast() {
-        try {
-            // Wait a moment for the entity to update
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const entity = this.hass.states[this._config.weather_entity];
-            if (entity && entity.attributes.forecast && entity.attributes.forecast.length > 0) {
-                this.forecastData = entity.attributes.forecast.slice(0, 4);
-                console.log('Found forecast in updated entity attributes:', this.forecastData);
-                this.requestUpdate();
-            } else {
-                console.log('Still no forecast data available');
-                this.forecastData = [];
-            }
-        } catch (error) {
-            console.error('Error checking entity forecast:', error);
-            this.forecastData = [];
         }
     }
 
@@ -268,8 +201,7 @@ class FlippyWeatherTesting extends LitElement {
             return {
                 temperature: '--',
                 condition: 'Unknown',
-                icon: '🌤️',
-                forecast: []
+                icon: '🌤️'
             };
         }
 
@@ -278,18 +210,12 @@ class FlippyWeatherTesting extends LitElement {
             return {
                 temperature: '--',
                 condition: 'Entity not found',
-                icon: '❓',
-                forecast: []
+                icon: '❓'
             };
         }
 
         const temperature = entity.attributes.temperature || '--';
         const condition = entity.state || 'Unknown';
-        
-        // Use forecast data fetched via service instead of entity attributes
-        const forecast = this.forecastData || [];
-        
-        console.log('Using forecast data:', forecast);
         
         // Use temperature as-is from Home Assistant (it's already in the correct unit)
         const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
@@ -297,8 +223,7 @@ class FlippyWeatherTesting extends LitElement {
         return {
             temperature: displayTemp,
             condition: condition,
-            icon: this.getWeatherEmoji(condition),
-            forecast: forecast
+            icon: this.getWeatherEmoji(condition)
         };
     }
 
@@ -362,11 +287,6 @@ class FlippyWeatherTesting extends LitElement {
         if (lowerCondition.includes('fog')) return 'fog';
         
         return 'sun';
-    }
-
-    renderForecast(forecast) {
-        // Forecast removed per user request
-        return html``;
     }
 
     render() {
@@ -547,7 +467,7 @@ class FlippyWeatherTesting extends LitElement {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 2em;
+                    font-size: 4em;
                     font-weight: bold;
                     color: #ffffff;
                     font-family: 'Courier New', monospace;
@@ -604,54 +524,12 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .condition {
-                    font-size: 1.2em;
+                    font-size: 2em;
                     font-weight: bold;
                     opacity: 1;
                     margin-bottom: 10px;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
                     color: white;
-                }
-                
-                .forecast-container {
-                    display: flex;
-                    justify-content: center;
-                    gap: 6px;
-                    margin-top: 2px;
-                    flex-wrap: nowrap;
-                    background: rgba(255, 255, 255, 0.2);
-                    padding: 5px;
-                    border-radius: 8px;
-                    backdrop-filter: blur(5px);
-                }
-                
-                .forecast-item {
-                    text-align: center;
-                    background: rgba(255, 255, 255, 0.3);
-                    border-radius: 6px;
-                    padding: 4px;
-                    min-width: 40px;
-                    flex: 1;
-                    max-width: 55px;
-                    color: white;
-                    font-weight: bold;
-                    backdrop-filter: blur(3px);
-                }
-                
-                .forecast-day {
-                    font-size: 0.65em;
-                    opacity: 0.9;
-                    font-weight: bold;
-                    margin-bottom: 1px;
-                }
-                
-                .forecast-icon {
-                    font-size: 1.2em;
-                    margin: 1px 0;
-                }
-                
-                .forecast-temp {
-                    font-size: 0.7em;
-                    font-weight: bold;
                 }
             </style>
             <ha-card>
