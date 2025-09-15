@@ -16,7 +16,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-                height: 200px;
+                height: 220px;
             }
         `
     },
@@ -201,8 +201,7 @@ class FlippyWeatherTesting extends LitElement {
             return {
                 temperature: '--',
                 condition: 'Unknown',
-                icon: '🌤️',
-                forecast: []
+                icon: '🌤️'
             };
         }
 
@@ -211,14 +210,12 @@ class FlippyWeatherTesting extends LitElement {
             return {
                 temperature: '--',
                 condition: 'Entity not found',
-                icon: '❓',
-                forecast: []
+                icon: '❓'
             };
         }
 
         const temperature = entity.attributes.temperature || '--';
         const condition = entity.state || 'Unknown';
-        const forecast = entity.attributes.forecast || [];
         
         // Use temperature as-is from Home Assistant (it's already in the correct unit)
         const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
@@ -226,8 +223,7 @@ class FlippyWeatherTesting extends LitElement {
         return {
             temperature: displayTemp,
             condition: condition,
-            icon: this.getWeatherEmoji(condition),
-            forecast: forecast.slice(0, 4)
+            icon: this.getWeatherEmoji(condition)
         };
     }
 
@@ -291,52 +287,6 @@ class FlippyWeatherTesting extends LitElement {
         if (lowerCondition.includes('fog')) return 'fog';
         
         return 'sun';
-    }
-
-    renderForecast(forecast) {
-        // Debug: Always show forecast container to test
-        return html`
-            <div class="forecast-container">
-                ${forecast && forecast.length > 0 
-                    ? forecast.map(period => {
-                        const temp = period.temperature || period.templow || '--';
-                        const displayTemp = temp === '--' ? '--' : Math.round(temp);
-                        const condition = period.condition || period.text || 'Unknown';
-                        const name = period.datetime ? new Date(period.datetime).toLocaleDateString('en-US', { weekday: 'short' }) : 'N/A';
-                        
-                        return html`
-                            <div class="forecast-item">
-                                <div class="forecast-day">${name}</div>
-                                <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
-                                <div class="forecast-temp">${displayTemp}°${this.getTemperatureUnit()}</div>
-                            </div>
-                        `;
-                    })
-                    : html`
-                        <div class="forecast-item">
-                            <div class="forecast-day">Mon</div>
-                            <div class="forecast-icon">🌤️</div>
-                            <div class="forecast-temp">75°F</div>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="forecast-day">Tue</div>
-                            <div class="forecast-icon">☀️</div>
-                            <div class="forecast-temp">78°F</div>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="forecast-day">Wed</div>
-                            <div class="forecast-icon">⛅</div>
-                            <div class="forecast-temp">72°F</div>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="forecast-day">Thu</div>
-                            <div class="forecast-icon">🌧️</div>
-                            <div class="forecast-temp">68°F</div>
-                        </div>
-                    `
-                }
-            </div>
-        `;
     }
 
     render() {
@@ -569,56 +519,17 @@ class FlippyWeatherTesting extends LitElement {
                     height: 40%;
                     display: flex;
                     flex-direction: column;
-                    justify-content: flex-start;
+                    justify-content: center;
+                    align-items: center;
                     padding-top: 5px;
-                    background: rgba(255, 0, 0, 0.3);
                 }
                 
                 .condition {
-                    font-size: 0.8em;
-                    opacity: 0.9;
-                    margin-bottom: 3px;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-                }
-                
-                .forecast-container {
-                    display: flex;
-                    justify-content: center;
-                    gap: 6px;
-                    margin-top: 2px;
-                    flex-wrap: nowrap;
-                    background: rgba(0, 255, 0, 0.3);
-                    padding: 5px;
-                    border-radius: 5px;
-                }
-                
-                .forecast-item {
-                    text-align: center;
-                    background: rgba(0, 0, 255, 0.5);
-                    border-radius: 6px;
-                    padding: 4px;
-                    min-width: 40px;
-                    flex: 1;
-                    max-width: 55px;
-                    color: white;
-                    font-weight: bold;
-                }
-                
-                .forecast-day {
-                    font-size: 0.65em;
-                    opacity: 0.9;
-                    font-weight: bold;
-                    margin-bottom: 1px;
-                }
-                
-                .forecast-icon {
                     font-size: 1.2em;
-                    margin: 1px 0;
-                }
-                
-                .forecast-temp {
-                    font-size: 0.7em;
                     font-weight: bold;
+                    opacity: 1;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                    color: white;
                 }
             </style>
             <ha-card>
@@ -667,7 +578,6 @@ class FlippyWeatherTesting extends LitElement {
                     
                     <div class="bottom-section">
                         <div class="condition">${weatherData.condition}</div>
-                        ${this.renderForecast(weatherData.forecast)}
                     </div>
                 </div>
             </ha-card>
