@@ -95,7 +95,7 @@ const weatherDefaults = {
     date_size: 'medium'
 };
 
-const flippyVersion = "4.4.0-testing";
+const flippyVersion = "4.5.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -486,9 +486,10 @@ class FlippyWeatherTesting extends LitElement {
                     position: relative;
                     z-index: 2;
                     width: 100%;
-                    text-align: center;
+                    text-align: right;
                     padding-top: ${dateSize.padding};
                     padding-bottom: 5px;
+                    padding-right: 5px;
                 }
                 
                 .flip-card {
@@ -584,17 +585,12 @@ class FlippyWeatherTesting extends LitElement {
                 .date {
                     font-size: ${dateSize.font};
                     color: white;
-                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.7)' : 'none'};
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     max-width: 100%;
-                    font-weight: 500;
-                    background: rgba(255, 255, 255, 0.1);
-                    padding: 8px 16px;
-                    border-radius: 20px;
-                    backdrop-filter: ${this._config.blur_background ? 'blur(10px)' : 'none'};
-                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    font-weight: 400;
                 }
 
                 /* Responsive adjustments for very narrow cards */
@@ -608,6 +604,11 @@ class FlippyWeatherTesting extends LitElement {
                     .right-section {
                         align-items: center;
                         text-align: center;
+                    }
+                    
+                    .date-section {
+                        text-align: center;
+                        padding-right: 0;
                     }
                     
                     .weather-icon-large {
