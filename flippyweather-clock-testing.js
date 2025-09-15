@@ -95,7 +95,7 @@ const weatherDefaults = {
     date_size: 'medium'
 };
 
-const flippyVersion = "4.7.0-testing";
+const flippyVersion = "4.9.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -431,7 +431,9 @@ class FlippyWeatherTesting extends LitElement {
                     align-items: ${this._config.compact_mode ? 'center' : 'center'};
                     justify-content: ${this._config.compact_mode ? 'center' : 'space-between'};
                     flex: 1;
-                    gap: ${this._config.compact_mode ? '10px' : '0'};
+                    gap: clamp(4px, 2vw, 12px);
+                    min-width: 0;
+                    width: 100%;
                 }
                 
                 .weather-icon-large {
@@ -453,7 +455,7 @@ class FlippyWeatherTesting extends LitElement {
                 .left-section {
                     display: flex;
                     align-items: center;
-                    gap: clamp(4px, 1vw, 8px);
+                    gap: clamp(3px, 0.8vw, 6px);
                     position: relative;
                     z-index: 2;
                     flex-shrink: 0;
@@ -469,6 +471,8 @@ class FlippyWeatherTesting extends LitElement {
                     min-width: 0;
                     flex: 1;
                     overflow: hidden;
+                    width: 100%;
+                    max-width: 100%;
                 }
                 
                 .date-bottom {
@@ -478,6 +482,9 @@ class FlippyWeatherTesting extends LitElement {
                     margin-top: auto;
                     margin-bottom: 0;
                     padding-top: 15px;
+                    min-width: 0;
+                    overflow: hidden;
+                    width: 100%;
                 }
                 
                 .flip-card {
@@ -524,7 +531,7 @@ class FlippyWeatherTesting extends LitElement {
                     color: white;
                     animation: blink 2s infinite;
                     text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.7)' : 'none'};
-                    margin: 0 clamp(4px, 1vw, 8px);
+                    margin: 0 clamp(2px, 0.5vw, 6px);
                     flex-shrink: 0;
                     font-weight: bold;
                 }
@@ -535,11 +542,11 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .am-pm-indicator {
-                    margin-left: clamp(4px, 1vw, 8px);
-                    font-size: clamp(0.7em, 2.5vw, 0.9em);
+                    margin-left: clamp(3px, 0.8vw, 6px);
+                    font-size: clamp(0.6em, 2vw, 0.8em);
                     background: rgba(255,255,255,0.2);
-                    padding: 4px 8px;
-                    border-radius: 10px;
+                    padding: 3px 6px;
+                    border-radius: 8px;
                     font-weight: bold;
                     text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
                     white-space: nowrap;
@@ -547,26 +554,28 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .temperature {
-                    font-size: clamp(2em, 8vw, 4em);
+                    font-size: clamp(1em, 4vw, 2.5em);
                     font-weight: bold;
                     color: white;
                     text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.9)' : 'none'};
-                    margin-bottom: 5px;
+                    margin-bottom: 2px;
                     white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    max-width: 100%;
+                    overflow: visible;
+                    width: 100%;
+                    word-break: keep-all;
+                    display: block;
                 }
                 
                 .condition {
-                    font-size: clamp(0.9em, 3vw, 1.2em);
+                    font-size: clamp(0.7em, 2.2vw, 1em);
                     font-weight: bold;
                     color: white;
                     text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.7)' : 'none'};
-                    margin-bottom: 5px;
+                    margin-bottom: 2px;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    width: 100%;
                     max-width: 100%;
                 }
                 
@@ -577,14 +586,51 @@ class FlippyWeatherTesting extends LitElement {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    width: 100%;
                     max-width: 100%;
                 }
 
-                /* Responsive adjustments for very narrow cards */
+                /* Aggressive responsive breakpoints */
+                @container (max-width: 450px) {
+                    .main-content {
+                        gap: clamp(3px, 1.5vw, 8px);
+                    }
+                    
+                    .left-section {
+                        gap: clamp(2px, 0.6vw, 4px);
+                    }
+                    
+                    .temperature {
+                        font-size: clamp(0.9em, 3.5vw, 2.2em);
+                    }
+                    
+                    .condition {
+                        font-size: clamp(0.65em, 2vw, 0.9em);
+                    }
+                }
+                
+                @container (max-width: 380px) {
+                    .temperature {
+                        font-size: clamp(0.8em, 3vw, 1.8em);
+                    }
+                    
+                    .condition {
+                        font-size: clamp(0.6em, 1.8vw, 0.8em);
+                    }
+                    
+                    .left-section {
+                        gap: clamp(1px, 0.4vw, 3px);
+                    }
+                    
+                    .clock-separator {
+                        margin: 0 clamp(1px, 0.3vw, 3px);
+                    }
+                }
+                
                 @container (max-width: 350px) {
                     .main-content {
                         flex-direction: column;
-                        gap: 10px;
+                        gap: 6px;
                         text-align: center;
                     }
                     
@@ -603,29 +649,49 @@ class FlippyWeatherTesting extends LitElement {
                     }
                     
                     .flip-card {
-                        width: calc(${clockSize.width} * 0.8);
-                        height: calc(${clockSize.height} * 0.8);
+                        width: calc(${clockSize.width} * 0.85);
+                        height: calc(${clockSize.height} * 0.85);
+                    }
+                    
+                    .temperature {
+                        font-size: clamp(1.2em, 4vw, 2.5em);
+                    }
+                    
+                    .condition {
+                        font-size: clamp(0.8em, 2.5vw, 1.1em);
                     }
                 }
                 
                 @container (max-width: 280px) {
                     .left-section {
-                        gap: 2px;
+                        gap: 1px;
                     }
                     
                     .flip-card {
-                        width: calc(${clockSize.width} * 0.7);
-                        height: calc(${clockSize.height} * 0.7);
+                        width: calc(${clockSize.width} * 0.75);
+                        height: calc(${clockSize.height} * 0.75);
                     }
                     
                     .am-pm-indicator {
                         padding: 2px 4px;
-                        font-size: 0.6em;
+                        font-size: 0.55em;
                     }
                     
                     .weather-icon-large {
                         font-size: 100px;
                         opacity: ${iconOpacity * 0.7};
+                    }
+                    
+                    .temperature {
+                        font-size: clamp(1em, 3.5vw, 2em);
+                    }
+                    
+                    .condition {
+                        font-size: clamp(0.7em, 1.8vw, 0.9em);
+                    }
+                    
+                    .clock-separator {
+                        margin: 0 1px;
                     }
                 }
             </style>
