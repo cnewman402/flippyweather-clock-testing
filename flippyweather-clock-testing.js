@@ -622,7 +622,7 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     static getConfigElement() {
-        return document.createElement('flippyweather-clock-editor');
+        return document.createElement('flippyweather-clock-testing-editor');
     }
 }
 
