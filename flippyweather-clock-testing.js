@@ -365,52 +365,8 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     renderForecast(forecast) {
-        // Show static forecast if no real data available
-        if (!forecast || forecast.length === 0) {
-            return html`
-                <div class="forecast-container">
-                    <div class="forecast-item">
-                        <div class="forecast-day">Mon</div>
-                        <div class="forecast-icon">🌤️</div>
-                        <div class="forecast-temp">75°${this.getTemperatureUnit()}</div>
-                    </div>
-                    <div class="forecast-item">
-                        <div class="forecast-day">Tue</div>
-                        <div class="forecast-icon">☀️</div>
-                        <div class="forecast-temp">78°${this.getTemperatureUnit()}</div>
-                    </div>
-                    <div class="forecast-item">
-                        <div class="forecast-day">Wed</div>
-                        <div class="forecast-icon">⛅</div>
-                        <div class="forecast-temp">72°${this.getTemperatureUnit()}</div>
-                    </div>
-                    <div class="forecast-item">
-                        <div class="forecast-day">Thu</div>
-                        <div class="forecast-icon">🌧️</div>
-                        <div class="forecast-temp">68°${this.getTemperatureUnit()}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        return html`
-            <div class="forecast-container">
-                ${forecast.map(period => {
-                    const temp = period.temperature || period.templow || '--';
-                    const displayTemp = temp === '--' ? '--' : Math.round(temp);
-                    const condition = period.condition || period.text || 'Unknown';
-                    const name = period.datetime ? new Date(period.datetime).toLocaleDateString('en-US', { weekday: 'short' }) : 'N/A';
-                    
-                    return html`
-                        <div class="forecast-item">
-                            <div class="forecast-day">${name}</div>
-                            <div class="forecast-icon">${this.getWeatherEmoji(condition)}</div>
-                            <div class="forecast-temp">${displayTemp}°${this.getTemperatureUnit()}</div>
-                        </div>
-                    `;
-                })}
-            </div>
-        `;
+        // Forecast removed per user request
+        return html``;
     }
 
     render() {
