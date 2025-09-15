@@ -89,13 +89,14 @@ const weatherDefaults = {
     show_date: true,
     show_condition: true,
     clock_size: 'medium',
+    temperature_size: 'medium',
     text_shadow: true,
     blur_background: true,
     icon_opacity: 'medium',
     date_size: 'medium'
 };
 
-const flippyVersion = "4.9.0-testing";
+const flippyVersion = "4.10.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -121,6 +122,7 @@ class FlippyWeatherTesting extends LitElement {
             show_date: true,
             show_condition: true,
             clock_size: 'medium',
+            temperature_size: 'medium',
             text_shadow: true,
             blur_background: true,
             icon_opacity: 'medium',
@@ -359,6 +361,20 @@ class FlippyWeatherTesting extends LitElement {
         return sizes[clockSize] || sizes.medium;
     }
 
+    getTemperatureSize() {
+        const tempSize = this._config.temperature_size || 'medium';
+        
+        const sizes = {
+            small: 'clamp(0.8em, 3vw, 1.8em)',
+            medium: 'clamp(1em, 4vw, 2.5em)',
+            large: 'clamp(1.3em, 5vw, 3.2em)',
+            'extra-large': 'clamp(1.6em, 6vw, 4em)',
+            huge: 'clamp(2em, 7vw, 5em)'
+        };
+        
+        return sizes[tempSize] || sizes.medium;
+    }
+
     getDateSize() {
         const dateSize = this._config.date_size || 'medium';
         
@@ -408,6 +424,7 @@ class FlippyWeatherTesting extends LitElement {
         const tempUnit = this.getTemperatureUnit();
         const nightModeClass = this.getNightModeClass();
         const clockSize = this.getClockSize();
+        const temperatureSize = this.getTemperatureSize();
         const dateSize = this.getDateSize();
         const iconOpacity = this.getIconOpacity();
 
@@ -554,7 +571,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .temperature {
-                    font-size: clamp(1em, 4vw, 2.5em);
+                    font-size: ${temperatureSize};
                     font-weight: bold;
                     color: white;
                     text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.9)' : 'none'};
@@ -590,7 +607,7 @@ class FlippyWeatherTesting extends LitElement {
                     max-width: 100%;
                 }
 
-                /* Aggressive responsive breakpoints */
+                /* Responsive adjustments */
                 @container (max-width: 450px) {
                     .main-content {
                         gap: clamp(3px, 1.5vw, 8px);
@@ -600,20 +617,12 @@ class FlippyWeatherTesting extends LitElement {
                         gap: clamp(2px, 0.6vw, 4px);
                     }
                     
-                    .temperature {
-                        font-size: clamp(0.9em, 3.5vw, 2.2em);
-                    }
-                    
                     .condition {
                         font-size: clamp(0.65em, 2vw, 0.9em);
                     }
                 }
                 
                 @container (max-width: 380px) {
-                    .temperature {
-                        font-size: clamp(0.8em, 3vw, 1.8em);
-                    }
-                    
                     .condition {
                         font-size: clamp(0.6em, 1.8vw, 0.8em);
                     }
@@ -653,10 +662,6 @@ class FlippyWeatherTesting extends LitElement {
                         height: calc(${clockSize.height} * 0.85);
                     }
                     
-                    .temperature {
-                        font-size: clamp(1.2em, 4vw, 2.5em);
-                    }
-                    
                     .condition {
                         font-size: clamp(0.8em, 2.5vw, 1.1em);
                     }
@@ -680,10 +685,6 @@ class FlippyWeatherTesting extends LitElement {
                     .weather-icon-large {
                         font-size: 100px;
                         opacity: ${iconOpacity * 0.7};
-                    }
-                    
-                    .temperature {
-                        font-size: clamp(1em, 3.5vw, 2em);
                     }
                     
                     .condition {
