@@ -18,9 +18,7 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
                 height: 220px;
             }
-            /* Night mode backgrounds */
-            .flippy-container.weather-clear-night,
-            .flippy-container.weather-default-night {
+            .flippy-container.night-mode {
                 background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             }
@@ -202,12 +200,17 @@ class FlippyWeatherTesting extends LitElement {
         return this._config.temperature_unit === 'celsius' ? 'C' : 'F';
     }
 
+    isNightTime() {
+        const hour = new Date().getHours();
+        return hour >= 20 || hour < 6;
+    }
+
     getWeatherFromEntity() {
         if (!this.hass || !this._config.weather_entity) {
             return {
                 temperature: '--',
                 condition: 'Unknown',
-                icon: '🌤️'
+                icon: this.isNightTime() ? '🌙' : '🌤️'
             };
         }
 
@@ -233,11 +236,16 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     getWeatherEmoji(condition) {
-        if (!condition) return '🌤️';
+        if (!condition) {
+            return this.isNightTime() ? '🌙' : '🌤️';
+        }
         
         const lowerCondition = condition.toLowerCase();
+        const isNight = this.isNightTime();
         
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) return '☀️';
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) {
+            return isNight ? '🌙' : '☀️';
+        }
         if (lowerCondition.includes('partlycloudy') || lowerCondition.includes('partly-cloudy')) return '⛅';
         if (lowerCondition.includes('cloudy')) return '☁️';
         if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return '🌧️';
@@ -246,37 +254,35 @@ class FlippyWeatherTesting extends LitElement {
         if (lowerCondition.includes('fog')) return '🌫️';
         if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) return '💨';
         
-        return '🌤️';
+        return isNight ? '🌙' : '🌤️';
     }
 
     getWeatherAnimationClass(condition) {
         if (!condition || !this._config.animated_background) return '';
         
         const lowerCondition = condition.toLowerCase();
-        const now = new Date();
-        const hour = now.getHours();
-        const isNightTime = hour < 6 || hour >= 20;
+        const isNight = this.isNightTime();
         
         if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) {
-            return `weather-rain${isNightTime ? '-night' : ''}`;
+            return `weather-rain${isNight ? '-night' : ''}`;
         }
         if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) {
-            return `weather-snow${isNightTime ? '-night' : ''}`;
+            return `weather-snow${isNight ? '-night' : ''}`;
         }
         if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) {
-            return `weather-storm${isNightTime ? '-night' : ''}`;
+            return `weather-storm${isNight ? '-night' : ''}`;
         }
         if (lowerCondition.includes('cloudy')) {
-            return `weather-cloudy${isNightTime ? '-night' : ''}`;
+            return `weather-cloudy${isNight ? '-night' : ''}`;
         }
         if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) {
-            return isNightTime ? 'weather-clear-night' : 'weather-sunny';
+            return isNight ? 'weather-clear-night' : 'weather-sunny';
         }
         if (lowerCondition.includes('fog')) {
-            return `weather-fog${isNightTime ? '-night' : ''}`;
+            return `weather-fog${isNight ? '-night' : ''}`;
         }
         
-        return isNightTime ? 'weather-default-night' : 'weather-default';
+        return isNight ? 'weather-default-night' : 'weather-default';
     }
 
     getWeatherIconClass(condition) {
@@ -292,6 +298,10 @@ class FlippyWeatherTesting extends LitElement {
         if (lowerCondition.includes('fog')) return 'fog';
         
         return 'sun';
+    }
+
+    getNightModeClass() {
+        return this.isNightTime() ? 'night-mode' : '';
     }
 
     render() {
@@ -317,6 +327,7 @@ class FlippyWeatherTesting extends LitElement {
         const weatherIcon = this.getWeatherEmoji(weatherData.condition);
         const iconClass = this.getWeatherIconClass(weatherData.condition);
         const tempUnit = this.getTemperatureUnit();
+        const nightModeClass = this.getNightModeClass();
 
         return html`
             <style>
@@ -459,7 +470,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
             </style>
             <ha-card>
-                <div class="flippy-container ${weatherAnimationClass}">
+                <div class="flippy-container ${weatherAnimationClass} ${nightModeClass}">
                     <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
                     <div class="left-section">
