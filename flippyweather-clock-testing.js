@@ -340,7 +340,6 @@ class FlippyWeatherTesting extends LitElement {
                     line-height: 1;
                     filter: none;
                     text-shadow: none;
-                    opacity: 0.3;
                 }
                 
                 .top-section {
