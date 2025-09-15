@@ -90,7 +90,8 @@ const weatherDefaults = {
     show_condition: true,
     clock_size: 'medium',
     text_shadow: true,
-    blur_background: true
+    blur_background: true,
+    icon_opacity: 'medium'
 };
 
 const flippyVersion = "4.0.0-testing";
@@ -120,7 +121,8 @@ class FlippyWeatherTesting extends LitElement {
             show_condition: true,
             clock_size: 'medium',
             text_shadow: true,
-            blur_background: true
+            blur_background: true,
+            icon_opacity: 'medium'
         };
     }
 
@@ -325,6 +327,17 @@ class FlippyWeatherTesting extends LitElement {
         return sizes[this._config.clock_size] || sizes.medium;
     }
 
+    getIconOpacity() {
+        const opacities = {
+            hidden: 0,
+            low: 0.15,
+            medium: 0.4,
+            high: 0.6,
+            full: 1.0
+        };
+        return opacities[this._config.icon_opacity] || opacities.medium;
+    }
+
     render() {
         if (!this._config) {
             return html`<ha-card><div style="padding: 20px;">Loading configuration...</div></ha-card>`;
@@ -350,6 +363,7 @@ class FlippyWeatherTesting extends LitElement {
         const tempUnit = this.getTemperatureUnit();
         const nightModeClass = this.getNightModeClass();
         const clockSize = this.getClockSize();
+        const iconOpacity = this.getIconOpacity();
 
         return html`
             <style>
@@ -380,7 +394,7 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
-                    opacity: 0.3;
+                    opacity: ${iconOpacity};
                 }
                 
                 .left-section {
@@ -530,7 +544,7 @@ class FlippyWeatherTesting extends LitElement {
                     
                     .weather-icon-large {
                         font-size: 120px;
-                        opacity: 0.2;
+                        opacity: ${iconOpacity * 0.8};
                     }
                 }
                 
@@ -551,7 +565,7 @@ class FlippyWeatherTesting extends LitElement {
                     
                     .weather-icon-large {
                         font-size: 100px;
-                        opacity: 0.15;
+                        opacity: ${iconOpacity * 0.7};
                     }
                 }
             </style>
@@ -620,208 +634,6 @@ class FlippyWeatherTesting extends LitElement {
     get hass() {
         return this._hass;
     }
-
-    static getConfigElement() {
-        return document.createElement('flippyweather-clock-testing-editor');
-    }
-}
-
-// Configuration Editor
-class FlippyWeatherConfigEditor extends LitElement {
-    static properties = {
-        hass: {},
-        _config: {}
-    };
-
-    setConfig(config) {
-        this._config = { ...weatherDefaults, ...config };
-    }
-
-    get _weather_entity() {
-        return this._config.weather_entity || '';
-    }
-
-    get _theme() {
-        return this._config.theme || 'default';
-    }
-
-    get _temperature_unit() {
-        return this._config.temperature_unit || 'fahrenheit';
-    }
-
-    get _clock_size() {
-        return this._config.clock_size || 'medium';
-    }
-
-    render() {
-        if (!this.hass || !this._config) {
-            return html``;
-        }
-
-        const weatherEntities = Object.keys(this.hass.states).filter(eid => eid.startsWith('weather.'));
-
-        return html`
-            <div class="card-config">
-                <div class="option">
-                    <label>Weather Entity:</label>
-                    <select .value=${this._weather_entity} @change=${this._valueChanged} .configValue=${'weather_entity'}>
-                        <option value="">Select weather entity</option>
-                        ${weatherEntities.map(entity => html`
-                            <option value="${entity}" ?selected=${this._weather_entity === entity}>
-                                ${entity}
-                            </option>
-                        `)}
-                    </select>
-                </div>
-
-                <div class="option">
-                    <label>Theme:</label>
-                    <select .value=${this._theme} @change=${this._valueChanged} .configValue=${'theme'}>
-                        ${Object.keys(themes).map(theme => html`
-                            <option value="${theme}" ?selected=${this._theme === theme}>
-                                ${theme.charAt(0).toUpperCase() + theme.slice(1)}
-                            </option>
-                        `)}
-                    </select>
-                </div>
-
-                <div class="option">
-                    <label>Temperature Unit:</label>
-                    <select .value=${this._temperature_unit} @change=${this._valueChanged} .configValue=${'temperature_unit'}>
-                        <option value="fahrenheit" ?selected=${this._temperature_unit === 'fahrenheit'}>Fahrenheit</option>
-                        <option value="celsius" ?selected=${this._temperature_unit === 'celsius'}>Celsius</option>
-                    </select>
-                </div>
-
-                <div class="option">
-                    <label>Clock Size:</label>
-                    <select .value=${this._clock_size} @change=${this._valueChanged} .configValue=${'clock_size'}>
-                        <option value="small" ?selected=${this._clock_size === 'small'}>Small</option>
-                        <option value="medium" ?selected=${this._clock_size === 'medium'}>Medium</option>
-                        <option value="large" ?selected=${this._clock_size === 'large'}>Large</option>
-                    </select>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.am_pm} @change=${this._valueChanged} .configValue=${'am_pm'}>
-                        12-hour format (AM/PM)
-                    </label>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.compact_mode} @change=${this._valueChanged} .configValue=${'compact_mode'}>
-                        Compact mode
-                    </label>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.show_date} @change=${this._valueChanged} .configValue=${'show_date'}>
-                        Show date
-                    </label>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.show_condition} @change=${this._valueChanged} .configValue=${'show_condition'}>
-                        Show weather condition
-                    </label>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.animated_background} @change=${this._valueChanged} .configValue=${'animated_background'}>
-                        Animated background
-                    </label>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.text_shadow} @change=${this._valueChanged} .configValue=${'text_shadow'}>
-                        Text shadow effects
-                    </label>
-                </div>
-
-                <div class="option">
-                    <label>
-                        <input type="checkbox" .checked=${this._config.blur_background} @change=${this._valueChanged} .configValue=${'blur_background'}>
-                        Blur background effects
-                    </label>
-                </div>
-            </div>
-        `;
-    }
-
-    _valueChanged(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-
-        const target = ev.target;
-        const configValue = target.configValue;
-        
-        if (this[`_${configValue}`] === target.value || this[`_${configValue}`] === target.checked) {
-            return;
-        }
-
-        let value;
-        if (target.type === 'checkbox') {
-            value = target.checked;
-        } else {
-            value = target.value;
-        }
-
-        this._config = { ...this._config, [configValue]: value };
-
-        const messageEvent = new CustomEvent('config-changed', {
-            detail: { config: this._config },
-            bubbles: true,
-            composed: true
-        });
-        this.dispatchEvent(messageEvent);
-    }
-
-    static get styles() {
-        return css`
-            .card-config {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                padding: 12px;
-            }
-            
-            .option {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-            }
-            
-            .option label {
-                font-weight: 500;
-                color: var(--primary-text-color);
-            }
-            
-            .option select, .option input[type="text"] {
-                padding: 8px;
-                border: 1px solid var(--divider-color);
-                border-radius: 4px;
-                background-color: var(--card-background-color);
-                color: var(--primary-text-color);
-            }
-            
-            .option input[type="checkbox"] {
-                margin-right: 8px;
-            }
-            
-            .option label:has(input[type="checkbox"]) {
-                flex-direction: row;
-                align-items: center;
-            }
-        `;
-    }
 }
 
 customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
-customElements.define("flippyweather-clock-editor", FlippyWeatherConfigEditor);
