@@ -353,31 +353,31 @@ class FlippyWeatherTesting extends LitElement {
                     filter: none;
                     text-shadow: none;
                     transform: translateX(-100vw);
-                    animation: flyInAndSpin 6s ease-out forwards;
+                    animation: flyInAndSpin 6s ease-out forwards !important;
                 }
                 
                 .weather-icon-large.sun {
-                    animation: flyInAndSpinSun 6s ease-out forwards;
+                    animation: flyInAndSpinSun 6s ease-out forwards !important;
                 }
                 
                 .weather-icon-large.rain {
-                    animation: flyInAndSpinRain 6s ease-out forwards;
+                    animation: flyInAndSpinRain 6s ease-out forwards !important;
                 }
                 
                 .weather-icon-large.snow {
-                    animation: flyInAndSpinSnow 8s ease-out forwards;
+                    animation: flyInAndSpinSnow 8s ease-out forwards !important;
                 }
                 
                 .weather-icon-large.storm {
-                    animation: flyInAndSpinStorm 5s ease-out forwards;
+                    animation: flyInAndSpinStorm 5s ease-out forwards !important;
                 }
                 
                 .weather-icon-large.cloud {
-                    animation: flyInAndSpinCloud 7s ease-out forwards;
+                    animation: flyInAndSpinCloud 7s ease-out forwards !important;
                 }
                 
                 .weather-icon-large.fog {
-                    animation: flyInAndSpinFog 6s ease-out forwards;
+                    animation: flyInAndSpinFog 6s ease-out forwards !important;
                 }
                 
                 @keyframes flyInAndSpin {
@@ -765,11 +765,11 @@ class FlippyWeatherTesting extends LitElement {
                         
                         <div class="weather-display">
                             <div class="temperature-overlay">${weatherData.temperature}°${tempUnit}</div>
+                            <div class="condition">${weatherData.condition}</div>
                         </div>
                     </div>
                     
                     <div class="bottom-section">
-                        <div class="condition">${weatherData.condition}</div>
                     </div>
                 </div>
             </ha-card>
