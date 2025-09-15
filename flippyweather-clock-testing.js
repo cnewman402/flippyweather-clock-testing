@@ -18,15 +18,6 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
                 height: 220px;
             }
-            .flippy-container.weather-clear-night,
-            .flippy-container.weather-default-night,
-            .flippy-container.weather-rain-night,
-            .flippy-container.weather-snow-night,
-            .flippy-container.weather-storm-night,
-            .flippy-container.weather-cloudy-night,
-            .flippy-container.weather-fog-night {
-                background: linear-gradient(135deg, #2c3e50, #34495e, #1a252f);
-            }
         `
     },
     dark: {
@@ -226,7 +217,6 @@ class FlippyWeatherTesting extends LitElement {
         const temperature = entity.attributes.temperature || '--';
         const condition = entity.state || 'Unknown';
         
-        // Use temperature as-is from Home Assistant (it's already in the correct unit)
         const displayTemp = temperature === '--' ? '--' : Math.round(temperature);
         
         return {
@@ -241,19 +231,14 @@ class FlippyWeatherTesting extends LitElement {
         
         const lowerCondition = condition.toLowerCase();
         
-        // Check for compound conditions first (more specific)
-        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) return '❄️';
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) return '☀️';
+        if (lowerCondition.includes('partlycloudy') || lowerCondition.includes('partly-cloudy')) return '⛅';
+        if (lowerCondition.includes('cloudy')) return '☁️';
         if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return '🌧️';
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm') || lowerCondition.includes('thunderstorm')) return '⛈️';
-        if (lowerCondition.includes('fog') || lowerCondition.includes('foggy') || lowerCondition.includes('mist')) return '🌫️';
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) return '⛈️';
+        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) return '❄️';
+        if (lowerCondition.includes('fog')) return '🌫️';
         if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) return '💨';
-        
-        // Then check for single conditions
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear') || lowerCondition.includes('sun')) return '☀️';
-        if (lowerCondition.includes('partlycloudy') || lowerCondition.includes('partly-cloudy') || lowerCondition.includes('partly cloudy')) return '⛅';
-        if (lowerCondition.includes('cloudy') || lowerCondition.includes('overcast')) return '☁️';
-        if (lowerCondition.includes('hail') || lowerCondition.includes('sleet')) return '🧊';
-        if (lowerCondition.includes('drizzle')) return '🌦️';
         
         return '🌤️';
     }
@@ -266,27 +251,23 @@ class FlippyWeatherTesting extends LitElement {
         const hour = now.getHours();
         const isNightTime = hour < 6 || hour >= 20;
         
-        // Priority order: most specific conditions first
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm') || lowerCondition.includes('thunderstorm')) {
-            return `weather-storm${isNightTime ? '-night' : ''}`;
-        }
-        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow') || lowerCondition.includes('blizzard')) {
-            return `weather-snow${isNightTime ? '-night' : ''}`;
-        }
-        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain') || lowerCondition.includes('drizzle')) {
+        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) {
             return `weather-rain${isNightTime ? '-night' : ''}`;
         }
-        if (lowerCondition.includes('fog') || lowerCondition.includes('foggy') || lowerCondition.includes('mist')) {
-            return `weather-fog${isNightTime ? '-night' : ''}`;
+        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) {
+            return `weather-snow${isNightTime ? '-night' : ''}`;
         }
-        if (lowerCondition.includes('cloudy') || lowerCondition.includes('overcast')) {
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) {
+            return `weather-storm${isNightTime ? '-night' : ''}`;
+        }
+        if (lowerCondition.includes('cloudy')) {
             return `weather-cloudy${isNightTime ? '-night' : ''}`;
         }
-        if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) {
-            return `weather-cloudy${isNightTime ? '-night' : ''}`;  // Use cloudy animation for wind
-        }
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear') || lowerCondition.includes('sun')) {
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) {
             return isNightTime ? 'weather-clear-night' : 'weather-sunny';
+        }
+        if (lowerCondition.includes('fog')) {
+            return `weather-fog${isNightTime ? '-night' : ''}`;
         }
         
         return isNightTime ? 'weather-default-night' : 'weather-default';
@@ -297,14 +278,12 @@ class FlippyWeatherTesting extends LitElement {
         
         const lowerCondition = condition.toLowerCase();
         
-        // Priority order for icon animations
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm') || lowerCondition.includes('thunderstorm')) return 'storm';
-        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow') || lowerCondition.includes('blizzard')) return 'snow';
-        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain') || lowerCondition.includes('drizzle')) return 'rain';
-        if (lowerCondition.includes('fog') || lowerCondition.includes('foggy') || lowerCondition.includes('mist')) return 'fog';
-        if (lowerCondition.includes('cloudy') || lowerCondition.includes('overcast')) return 'cloud';
-        if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) return 'cloud';  // Use cloud animation for wind
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear') || lowerCondition.includes('sun')) return 'sun';
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) return 'sun';
+        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return 'rain';
+        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) return 'snow';
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) return 'storm';
+        if (lowerCondition.includes('cloudy')) return 'cloud';
+        if (lowerCondition.includes('fog')) return 'fog';
         
         return 'sun';
     }
@@ -359,93 +338,18 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
+                    filter: none;
+                    text-shadow: none;
                     opacity: 0.3;
                 }
                 
-                /* Night mode styles */
-                .flippy-container.weather-clear-night,
-                .flippy-container.weather-default-night {
-                    background: linear-gradient(135deg, #1a252f, #2c3e50, #34495e);
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-                }
-                
-                .flippy-container.weather-rain-night {
-                    background: linear-gradient(135deg, #1e3a8a, #1e40af, #2563eb);
-                    box-shadow: 0 8px 32px rgba(30, 58, 138, 0.4);
-                }
-                
-                .flippy-container.weather-snow-night {
-                    background: linear-gradient(135deg, #374151, #4b5563, #6b7280);
-                    box-shadow: 0 8px 32px rgba(55, 65, 81, 0.4);
-                }
-                
-                .flippy-container.weather-storm-night {
-                    background: linear-gradient(135deg, #111827, #1f2937, #374151);
-                    box-shadow: 0 8px 32px rgba(17, 24, 39, 0.8);
-                }
-                
-                .flippy-container.weather-cloudy-night {
-                    background: linear-gradient(135deg, #374151, #4b5563, #6b7280);
-                    box-shadow: 0 8px 32px rgba(55, 65, 81, 0.4);
-                }
-                
-                .flippy-container.weather-fog-night {
-                    background: linear-gradient(135deg, #4b5563, #6b7280, #9ca3af);
-                    box-shadow: 0 8px 32px rgba(75, 85, 99, 0.4);
-                }
-                
-                /* Night mode icon animations */
-                .weather-icon-large.night {
-                    opacity: 0.4;
-                    filter: brightness(0.7);
-                }
-                
-                /* Darker flip cards for night mode */
-                .flippy-container.weather-clear-night .flip-card-face,
-                .flippy-container.weather-default-night .flip-card-face,
-                .flippy-container.weather-rain-night .flip-card-face,
-                .flippy-container.weather-snow-night .flip-card-face,
-                .flippy-container.weather-storm-night .flip-card-face,
-                .flippy-container.weather-cloudy-night .flip-card-face,
-                .flippy-container.weather-fog-night .flip-card-face {
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.15);
-                }
-                
-                /* Night mode temperature and condition text */
-                .flippy-container.weather-clear-night .temperature-overlay,
-                .flippy-container.weather-default-night .temperature-overlay,
-                .flippy-container.weather-rain-night .temperature-overlay,
-                .flippy-container.weather-snow-night .temperature-overlay,
-                .flippy-container.weather-storm-night .temperature-overlay,
-                .flippy-container.weather-cloudy-night .temperature-overlay,
-                .flippy-container.weather-fog-night .temperature-overlay {
-                    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-                }
-                
-                .flippy-container.weather-clear-night .condition,
-                .flippy-container.weather-default-night .condition,
-                .flippy-container.weather-rain-night .condition,
-                .flippy-container.weather-snow-night .condition,
-                .flippy-container.weather-storm-night .condition,
-                .flippy-container.weather-cloudy-night .condition,
-                .flippy-container.weather-fog-night .condition {
-                    text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
-                }
-                
-                .container {
+                .top-section {
                     display: flex;
-                    flex-direction: column;
-                    height: 100%;
-                }
-                
-                .top-row {
-                    display: flex;
-                    justify-content: space-between;
                     align-items: center;
+                    justify-content: space-between;
                     position: relative;
                     z-index: 2;
-                    flex: 1;
+                    height: 60%;
                 }
                 
                 .htc-clock {
@@ -515,6 +419,12 @@ class FlippyWeatherTesting extends LitElement {
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
                 }
                 
+                .weather-display {
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                }
+                
                 .temperature-overlay {
                     font-size: 4em;
                     font-weight: bold;
@@ -522,66 +432,73 @@ class FlippyWeatherTesting extends LitElement {
                     text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
                 }
                 
-                .bottom-row {
+                .bottom-section {
                     position: relative;
                     z-index: 10;
                     text-align: center;
-                    padding-top: 15px;
+                    height: 40%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: center;
+                    padding-top: 5px;
                 }
                 
                 .condition {
                     font-size: 1.2em;
                     font-weight: bold;
-                    color: white;
+                    opacity: 1;
+                    margin-bottom: 3px;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                    color: white;
                 }
             </style>
             <ha-card>
                 <div class="flippy-container ${weatherAnimationClass}">
                     <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
-                    <div class="container">
-                        <div class="top-row">
-                            <div class="htc-clock">
-                                <div class="flip-card">
-                                    <div class="flip-card-inner" data-digit="firstHourDigit">
-                                        <div class="flip-card-face">${hourStr[0]}</div>
-                                    </div>
+                    <div class="top-section">
+                        <div class="htc-clock">
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="firstHourDigit">
+                                    <div class="flip-card-face">${hourStr[0]}</div>
                                 </div>
-                                
-                                <div class="flip-card">
-                                    <div class="flip-card-inner" data-digit="secondHourDigit">
-                                        <div class="flip-card-face">${hourStr[1]}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="clock-separator">:</div>
-                                
-                                <div class="flip-card">
-                                    <div class="flip-card-inner" data-digit="firstMinuteDigit">
-                                        <div class="flip-card-face">${minuteStr[0]}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flip-card">
-                                    <div class="flip-card-inner" data-digit="secondMinuteDigit">
-                                        <div class="flip-card-face">${minuteStr[1]}</div>
-                                    </div>
-                                </div>
-                                
-                                ${this._config.am_pm ? html`
-                                    <div class="am-pm-indicator">
-                                        ${now.getHours() >= 12 ? 'PM' : 'AM'}
-                                    </div>
-                                ` : ''}
                             </div>
                             
-                            <div class="temperature-overlay">${weatherData.temperature}°${tempUnit}</div>
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="secondHourDigit">
+                                    <div class="flip-card-face">${hourStr[1]}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="clock-separator">:</div>
+                            
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="firstMinuteDigit">
+                                    <div class="flip-card-face">${minuteStr[0]}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flip-card">
+                                <div class="flip-card-inner" data-digit="secondMinuteDigit">
+                                    <div class="flip-card-face">${minuteStr[1]}</div>
+                                </div>
+                            </div>
+                            
+                            ${this._config.am_pm ? html`
+                                <div class="am-pm-indicator">
+                                    ${now.getHours() >= 12 ? 'PM' : 'AM'}
+                                </div>
+                            ` : ''}
                         </div>
                         
-                        <div class="bottom-row">
-                            <div class="condition">${weatherData.condition}</div>
+                        <div class="weather-display">
+                            <div class="temperature-overlay">${weatherData.temperature}°${tempUnit}</div>
                         </div>
+                    </div>
+                    
+                    <div class="bottom-section">
+                        <div class="condition">${weatherData.condition}</div>
                     </div>
                 </div>
             </ha-card>
