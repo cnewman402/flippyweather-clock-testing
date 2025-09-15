@@ -423,6 +423,77 @@ class FlippyWeatherTesting extends LitElement {
                     100% { transform: scale(1); opacity: 1; }
                 }
                 
+                /* Night mode styles */
+                .flippy-container.weather-clear-night,
+                .flippy-container.weather-default-night {
+                    background: linear-gradient(135deg, #1a252f, #2c3e50, #34495e);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+                }
+                
+                .flippy-container.weather-rain-night {
+                    background: linear-gradient(135deg, #1e3a8a, #1e40af, #2563eb);
+                    box-shadow: 0 8px 32px rgba(30, 58, 138, 0.4);
+                }
+                
+                .flippy-container.weather-snow-night {
+                    background: linear-gradient(135deg, #374151, #4b5563, #6b7280);
+                    box-shadow: 0 8px 32px rgba(55, 65, 81, 0.4);
+                }
+                
+                .flippy-container.weather-storm-night {
+                    background: linear-gradient(135deg, #111827, #1f2937, #374151);
+                    box-shadow: 0 8px 32px rgba(17, 24, 39, 0.8);
+                }
+                
+                .flippy-container.weather-cloudy-night {
+                    background: linear-gradient(135deg, #374151, #4b5563, #6b7280);
+                    box-shadow: 0 8px 32px rgba(55, 65, 81, 0.4);
+                }
+                
+                .flippy-container.weather-fog-night {
+                    background: linear-gradient(135deg, #4b5563, #6b7280, #9ca3af);
+                    box-shadow: 0 8px 32px rgba(75, 85, 99, 0.4);
+                }
+                
+                /* Night mode icon animations */
+                .weather-icon-large.night {
+                    opacity: 0.4;
+                    filter: brightness(0.7);
+                }
+                
+                /* Darker flip cards for night mode */
+                .flippy-container.weather-clear-night .flip-card-face,
+                .flippy-container.weather-default-night .flip-card-face,
+                .flippy-container.weather-rain-night .flip-card-face,
+                .flippy-container.weather-snow-night .flip-card-face,
+                .flippy-container.weather-storm-night .flip-card-face,
+                .flippy-container.weather-cloudy-night .flip-card-face,
+                .flippy-container.weather-fog-night .flip-card-face {
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                }
+                
+                /* Night mode temperature and condition text */
+                .flippy-container.weather-clear-night .temperature-overlay,
+                .flippy-container.weather-default-night .temperature-overlay,
+                .flippy-container.weather-rain-night .temperature-overlay,
+                .flippy-container.weather-snow-night .temperature-overlay,
+                .flippy-container.weather-storm-night .temperature-overlay,
+                .flippy-container.weather-cloudy-night .temperature-overlay,
+                .flippy-container.weather-fog-night .temperature-overlay {
+                    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+                }
+                
+                .flippy-container.weather-clear-night .condition,
+                .flippy-container.weather-default-night .condition,
+                .flippy-container.weather-rain-night .condition,
+                .flippy-container.weather-snow-night .condition,
+                .flippy-container.weather-storm-night .condition,
+                .flippy-container.weather-cloudy-night .condition,
+                .flippy-container.weather-fog-night .condition {
+                    text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+                }
+                
                 .top-section {
                     display: flex;
                     align-items: center;
