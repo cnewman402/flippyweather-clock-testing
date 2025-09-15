@@ -18,6 +18,12 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
                 height: 220px;
             }
+            /* Night mode backgrounds */
+            .flippy-container.weather-clear-night,
+            .flippy-container.weather-default-night {
+                background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            }
         `
     },
     dark: {
