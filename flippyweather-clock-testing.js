@@ -94,7 +94,7 @@ const weatherDefaults = {
     icon_opacity: 'medium'
 };
 
-const flippyVersion = "4.2.0-testing";
+const flippyVersion = "4.3.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -139,9 +139,6 @@ class FlippyWeatherTesting extends LitElement {
         }
         
         this._config = defaultConfig;
-        
-        // Debug logging for clock size
-        console.log('FlippyWeather Config - clock_size:', this._config.clock_size);
     }
 
     async connectedCallback() {
@@ -326,38 +323,37 @@ class FlippyWeatherTesting extends LitElement {
         
         const sizes = {
             small: { 
-                flip: '30px', 
+                width: '30px', 
                 height: '45px', 
                 font: '1.4em', 
                 separator: '2em' 
             },
             medium: { 
-                flip: '40px', 
+                width: '40px', 
                 height: '60px', 
                 font: '2em', 
                 separator: '2.5em' 
             },
             large: { 
-                flip: '60px', 
-                height: '90px', 
-                font: '3.5em', 
-                separator: '4em' 
+                width: '40px',     // Same width as medium
+                height: '80px',    // Taller
+                font: '3em',       // Bigger font
+                separator: '3.5em' 
             },
             'extra-large': { 
-                flip: '80px', 
-                height: '120px', 
-                font: '5em', 
-                separator: '5.5em' 
+                width: '40px',     // Same width as medium
+                height: '100px',   // Much taller
+                font: '4em',       // Much bigger font
+                separator: '4.5em' 
             },
             huge: { 
-                flip: '100px', 
-                height: '150px', 
-                font: '6em', 
-                separator: '7em' 
+                width: '45px',     // Only slightly wider
+                height: '120px',   // Very tall
+                font: '5em',       // Very big font
+                separator: '5.5em' 
             }
         };
         
-        console.log('Clock size requested:', clockSize, 'Result:', sizes[clockSize]);
         return sizes[clockSize] || sizes.medium;
     }
 
@@ -434,7 +430,7 @@ class FlippyWeatherTesting extends LitElement {
                 .left-section {
                     display: flex;
                     align-items: center;
-                    gap: clamp(4px, 1vw, 12px);
+                    gap: clamp(4px, 1vw, 8px);
                     position: relative;
                     z-index: 2;
                     flex-shrink: 0;
@@ -453,7 +449,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .flip-card {
-                    width: ${clockSize.flip};
+                    width: ${clockSize.width};
                     height: ${clockSize.height};
                     perspective: 1000px;
                     flex-shrink: 0;
@@ -477,7 +473,7 @@ class FlippyWeatherTesting extends LitElement {
                     height: 100%;
                     backface-visibility: hidden;
                     background: rgba(255, 255, 255, 0.15);
-                    border-radius: clamp(6px, 1.2vw, 16px);
+                    border-radius: clamp(6px, 1.2vw, 12px);
                     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
                     display: flex;
                     align-items: center;
@@ -496,7 +492,7 @@ class FlippyWeatherTesting extends LitElement {
                     color: white;
                     animation: blink 2s infinite;
                     text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.7)' : 'none'};
-                    margin: 0 clamp(4px, 1vw, 12px);
+                    margin: 0 clamp(4px, 1vw, 8px);
                     flex-shrink: 0;
                     font-weight: bold;
                 }
@@ -572,8 +568,8 @@ class FlippyWeatherTesting extends LitElement {
                     }
                     
                     .flip-card {
-                        width: calc(${clockSize.flip} * 0.7);
-                        height: calc(${clockSize.height} * 0.7);
+                        width: calc(${clockSize.width} * 0.8);
+                        height: calc(${clockSize.height} * 0.8);
                     }
                 }
                 
@@ -583,8 +579,8 @@ class FlippyWeatherTesting extends LitElement {
                     }
                     
                     .flip-card {
-                        width: calc(${clockSize.flip} * 0.6);
-                        height: calc(${clockSize.height} * 0.6);
+                        width: calc(${clockSize.width} * 0.7);
+                        height: calc(${clockSize.height} * 0.7);
                     }
                     
                     .am-pm-indicator {
