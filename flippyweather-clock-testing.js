@@ -429,7 +429,7 @@ class FlippyWeatherTesting extends LitElement {
                     justify-content: space-between;
                     position: relative;
                     z-index: 2;
-                    height: 60%;
+                    height: 70%;
                 }
                 
                 .htc-clock {
@@ -516,12 +516,11 @@ class FlippyWeatherTesting extends LitElement {
                     position: relative;
                     z-index: 10;
                     text-align: center;
-                    height: 40%;
+                    height: 30%;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
-                    padding-top: 5px;
                 }
                 
                 .condition {
