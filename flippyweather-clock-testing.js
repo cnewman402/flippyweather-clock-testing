@@ -16,7 +16,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-                height: 220px;
+                min-height: 200px;
             }
             .flippy-container.night-mode {
                 background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
@@ -33,7 +33,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-                height: 200px;
+                min-height: 200px;
             }
         `
     },
@@ -46,7 +46,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-                height: 200px;
+                min-height: 200px;
             }
         `
     },
@@ -59,7 +59,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(255, 118, 117, 0.3);
-                height: 200px;
+                min-height: 200px;
             }
         `
     },
@@ -72,7 +72,7 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 184, 148, 0.3);
-                height: 200px;
+                min-height: 200px;
             }
         `
     }
@@ -84,10 +84,16 @@ const weatherDefaults = {
     animated_background: true,
     theme: 'default',
     weather_entity: null,
-    temperature_unit: 'fahrenheit'
+    temperature_unit: 'fahrenheit',
+    compact_mode: false,
+    show_date: true,
+    show_condition: true,
+    clock_size: 'medium',
+    text_shadow: true,
+    blur_background: true
 };
 
-const flippyVersion = "3.0.0-testing";
+const flippyVersion = "4.0.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -108,7 +114,13 @@ class FlippyWeatherTesting extends LitElement {
             animated_background: true,
             theme: 'default',
             weather_entity: 'weather.home',
-            temperature_unit: 'fahrenheit'
+            temperature_unit: 'fahrenheit',
+            compact_mode: false,
+            show_date: true,
+            show_condition: true,
+            clock_size: 'medium',
+            text_shadow: true,
+            blur_background: true
         };
     }
 
@@ -304,6 +316,15 @@ class FlippyWeatherTesting extends LitElement {
         return this.isNightTime() ? 'night-mode' : '';
     }
 
+    getClockSize() {
+        const sizes = {
+            small: { flip: '30px', height: '45px', font: '1.4em', separator: '2em' },
+            medium: { flip: '40px', height: '60px', font: '2em', separator: '2.5em' },
+            large: { flip: '50px', height: '75px', font: '2.5em', separator: '3em' }
+        };
+        return sizes[this._config.clock_size] || sizes.medium;
+    }
+
     render() {
         if (!this._config) {
             return html`<ha-card><div style="padding: 20px;">Loading configuration...</div></ha-card>`;
@@ -328,6 +349,7 @@ class FlippyWeatherTesting extends LitElement {
         const iconClass = this.getWeatherIconClass(weatherData.condition);
         const tempUnit = this.getTemperatureUnit();
         const nightModeClass = this.getNightModeClass();
+        const clockSize = this.getClockSize();
 
         return html`
             <style>
@@ -338,9 +360,11 @@ class FlippyWeatherTesting extends LitElement {
                     overflow: hidden;
                     transition: background 1s ease-in-out;
                     display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    height: 100%;
+                    flex-direction: ${this._config.compact_mode ? 'column' : 'row'};
+                    align-items: ${this._config.compact_mode ? 'center' : 'center'};
+                    justify-content: ${this._config.compact_mode ? 'center' : 'space-between'};
+                    min-height: ${this._config.compact_mode ? '150px' : '200px'};
+                    gap: ${this._config.compact_mode ? '10px' : '0'};
                 }
                 
                 .weather-icon-large {
@@ -352,32 +376,39 @@ class FlippyWeatherTesting extends LitElement {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 300px;
+                    font-size: clamp(150px, 20vw, 300px);
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
+                    opacity: 0.3;
                 }
                 
                 .left-section {
                     display: flex;
                     align-items: center;
-                    gap: 8px;
+                    gap: clamp(4px, 1vw, 8px);
                     position: relative;
                     z-index: 2;
+                    flex-shrink: 0;
                 }
                 
                 .right-section {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-end;
+                    align-items: ${this._config.compact_mode ? 'center' : 'flex-end'};
                     position: relative;
                     z-index: 2;
+                    text-align: ${this._config.compact_mode ? 'center' : 'right'};
+                    min-width: 0;
+                    flex: 1;
+                    overflow: hidden;
                 }
                 
                 .flip-card {
-                    width: 40px;
-                    height: 60px;
+                    width: ${clockSize.flip};
+                    height: ${clockSize.height};
                     perspective: 1000px;
+                    flex-shrink: 0;
                 }
                 
                 .flip-card-inner {
@@ -398,26 +429,27 @@ class FlippyWeatherTesting extends LitElement {
                     height: 100%;
                     backface-visibility: hidden;
                     background: rgba(255, 255, 255, 0.15);
-                    border-radius: 8px;
+                    border-radius: clamp(4px, 0.8vw, 8px);
                     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 2em;
+                    font-size: ${clockSize.font};
                     font-weight: bold;
                     color: #ffffff;
                     font-family: 'Courier New', monospace;
                     border: 1px solid rgba(255, 255, 255, 0.2);
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-                    backdrop-filter: blur(5px);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.8)' : 'none'};
+                    backdrop-filter: ${this._config.blur_background ? 'blur(5px)' : 'none'};
                 }
                 
                 .clock-separator {
-                    font-size: 2.5em;
+                    font-size: ${clockSize.separator};
                     color: white;
                     animation: blink 2s infinite;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-                    margin: 0 5px;
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
+                    margin: 0 clamp(2px, 0.5vw, 5px);
+                    flex-shrink: 0;
                 }
                 
                 @keyframes blink {
@@ -426,50 +458,104 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .am-pm-indicator {
-                    margin-left: 8px;
-                    font-size: 0.9em;
+                    margin-left: clamp(4px, 1vw, 8px);
+                    font-size: clamp(0.7em, 2.5vw, 0.9em);
                     background: rgba(255,255,255,0.2);
                     padding: 4px 8px;
                     border-radius: 10px;
                     font-weight: bold;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
+                    white-space: nowrap;
+                    flex-shrink: 0;
                 }
                 
                 .temperature {
-                    font-size: 4em;
+                    font-size: clamp(2em, 8vw, 4em);
                     font-weight: bold;
                     color: white;
-                    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
-                    text-align: right;
+                    text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.9)' : 'none'};
                     margin-bottom: 5px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
                 }
                 
                 .condition {
-                    font-size: 1.2em;
+                    font-size: clamp(0.9em, 3vw, 1.2em);
                     font-weight: bold;
                     color: white;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                    text-align: right;
+                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.7)' : 'none'};
                     margin-bottom: 5px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
                 }
                 
                 .date {
-                    font-size: 0.9em;
+                    font-size: clamp(0.7em, 2.5vw, 0.9em);
                     color: white;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-                    text-align: right;
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
                     margin-bottom: 2px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
                 }
                 
                 .time {
-                    font-size: 0.8em;
+                    font-size: clamp(0.6em, 2vw, 0.8em);
                     color: white;
                     opacity: 0.9;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-                    text-align: right;
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
+                }
+
+                /* Responsive adjustments for very narrow cards */
+                @container (max-width: 350px) {
+                    .flippy-container {
+                        flex-direction: column;
+                        gap: 10px;
+                        text-align: center;
+                    }
+                    
+                    .right-section {
+                        align-items: center;
+                        text-align: center;
+                    }
+                    
+                    .weather-icon-large {
+                        font-size: 120px;
+                        opacity: 0.2;
+                    }
+                }
+                
+                @container (max-width: 280px) {
+                    .left-section {
+                        gap: 2px;
+                    }
+                    
+                    .flip-card {
+                        width: calc(${clockSize.flip} * 0.8);
+                        height: calc(${clockSize.height} * 0.8);
+                    }
+                    
+                    .am-pm-indicator {
+                        padding: 2px 4px;
+                        font-size: 0.6em;
+                    }
+                    
+                    .weather-icon-large {
+                        font-size: 100px;
+                        opacity: 0.15;
+                    }
                 }
             </style>
-            <ha-card>
+            <ha-card style="container-type: inline-size;">
                 <div class="flippy-container ${weatherAnimationClass} ${nightModeClass}">
                     <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
@@ -509,8 +595,12 @@ class FlippyWeatherTesting extends LitElement {
                     
                     <div class="right-section">
                         <div class="temperature">${weatherData.temperature}°${tempUnit}</div>
-                        <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
-                        <div class="date">${now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                        ${this._config.show_condition ? html`
+                            <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
+                        ` : ''}
+                        ${this._config.show_date ? html`
+                            <div class="date">${now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                        ` : ''}
                         <div class="time">${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
                     </div>
                 </div>
@@ -519,7 +609,7 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     getCardSize() {
-        return 2;
+        return this._config.compact_mode ? 1 : 2;
     }
 
     set hass(hass) {
@@ -530,6 +620,123 @@ class FlippyWeatherTesting extends LitElement {
     get hass() {
         return this._hass;
     }
+
+    static getConfigElement() {
+        return document.createElement('flippyweather-clock-editor');
+    }
 }
 
-customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
+// Configuration Editor
+class FlippyWeatherConfigEditor extends LitElement {
+    static properties = {
+        hass: {},
+        _config: {}
+    };
+
+    setConfig(config) {
+        this._config = { ...weatherDefaults, ...config };
+    }
+
+    get _weather_entity() {
+        return this._config.weather_entity || '';
+    }
+
+    get _theme() {
+        return this._config.theme || 'default';
+    }
+
+    get _temperature_unit() {
+        return this._config.temperature_unit || 'fahrenheit';
+    }
+
+    get _clock_size() {
+        return this._config.clock_size || 'medium';
+    }
+
+    render() {
+        if (!this.hass || !this._config) {
+            return html``;
+        }
+
+        const weatherEntities = Object.keys(this.hass.states).filter(eid => eid.startsWith('weather.'));
+
+        return html`
+            <div class="card-config">
+                <div class="option">
+                    <label>Weather Entity:</label>
+                    <select .value=${this._weather_entity} @change=${this._valueChanged} .configValue=${'weather_entity'}>
+                        <option value="">Select weather entity</option>
+                        ${weatherEntities.map(entity => html`
+                            <option value="${entity}" ?selected=${this._weather_entity === entity}>
+                                ${entity}
+                            </option>
+                        `)}
+                    </select>
+                </div>
+
+                <div class="option">
+                    <label>Theme:</label>
+                    <select .value=${this._theme} @change=${this._valueChanged} .configValue=${'theme'}>
+                        ${Object.keys(themes).map(theme => html`
+                            <option value="${theme}" ?selected=${this._theme === theme}>
+                                ${theme.charAt(0).toUpperCase() + theme.slice(1)}
+                            </option>
+                        `)}
+                    </select>
+                </div>
+
+                <div class="option">
+                    <label>Temperature Unit:</label>
+                    <select .value=${this._temperature_unit} @change=${this._valueChanged} .configValue=${'temperature_unit'}>
+                        <option value="fahrenheit" ?selected=${this._temperature_unit === 'fahrenheit'}>Fahrenheit</option>
+                        <option value="celsius" ?selected=${this._temperature_unit === 'celsius'}>Celsius</option>
+                    </select>
+                </div>
+
+                <div class="option">
+                    <label>Clock Size:</label>
+                    <select .value=${this._clock_size} @change=${this._valueChanged} .configValue=${'clock_size'}>
+                        <option value="small" ?selected=${this._clock_size === 'small'}>Small</option>
+                        <option value="medium" ?selected=${this._clock_size === 'medium'}>Medium</option>
+                        <option value="large" ?selected=${this._clock_size === 'large'}>Large</option>
+                    </select>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="checkbox" .checked=${this._config.am_pm} @change=${this._valueChanged} .configValue=${'am_pm'}>
+                        12-hour format (AM/PM)
+                    </label>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="checkbox" .checked=${this._config.compact_mode} @change=${this._valueChanged} .configValue=${'compact_mode'}>
+                        Compact mode
+                    </label>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="checkbox" .checked=${this._config.show_date} @change=${this._valueChanged} .configValue=${'show_date'}>
+                        Show date
+                    </label>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="checkbox" .checked=${this._config.show_condition} @change=${this._valueChanged} .configValue=${'show_condition'}>
+                        Show weather condition
+                    </label>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="checkbox" .checked=${this._config.animated_background} @change=${this._valueChanged} .configValue=${'animated_background'}>
+                        Animated background
+                    </label>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="
