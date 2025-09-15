@@ -159,13 +159,14 @@ class FlippyWeatherTesting extends LitElement {
             console.log('Fetching forecast data via service...');
             const result = await this.hass.callService('weather', 'get_forecasts', {
                 entity_id: this._config.weather_entity,
-                type: 'daily'
-            }, { return_response: true });
+                type: 'daily',
+                return_response: true
+            });
             
             console.log('Forecast service result:', result);
             
-            if (result && result.response && result.response[this._config.weather_entity] && result.response[this._config.weather_entity].forecast) {
-                this.forecastData = result.response[this._config.weather_entity].forecast.slice(0, 4);
+            if (result && result[this._config.weather_entity] && result[this._config.weather_entity].forecast) {
+                this.forecastData = result[this._config.weather_entity].forecast.slice(0, 4);
                 console.log('Successfully fetched forecast:', this.forecastData);
                 this.requestUpdate();
             } else {
