@@ -519,8 +519,8 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .flip-card {
-                    width: 40px;
-                    height: 60px;
+                    width: 80px;
+                    height: 120px;
                     perspective: 1000px;
                 }
                 
@@ -700,7 +700,6 @@ class FlippyWeatherTesting extends LitElement {
                     
                     <div class="bottom-section">
                         <div class="condition">${weatherData.condition}</div>
-                        ${this.renderForecast(weatherData.forecast)}
                     </div>
                 </div>
             </ha-card>
