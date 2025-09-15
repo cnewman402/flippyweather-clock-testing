@@ -783,42 +783,44 @@ class FlippyWeatherConfigEditor extends LitElement {
         this.dispatchEvent(messageEvent);
     }
 
-    static styles = css`
-        .card-config {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 12px;
-        }
-        
-        .option {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .option label {
-            font-weight: 500;
-            color: var(--primary-text-color);
-        }
-        
-        .option select, .option input[type="text"] {
-            padding: 8px;
-            border: 1px solid var(--divider-color);
-            border-radius: 4px;
-            background-color: var(--card-background-color);
-            color: var(--primary-text-color);
-        }
-        
-        .option input[type="checkbox"] {
-            margin-right: 8px;
-        }
-        
-        .option label:has(input[type="checkbox"]) {
-            flex-direction: row;
-            align-items: center;
-        }
-    `;
+    static get styles() {
+        return css`
+            .card-config {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .option {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .option label {
+                font-weight: 500;
+                color: var(--primary-text-color);
+            }
+            
+            .option select, .option input[type="text"] {
+                padding: 8px;
+                border: 1px solid var(--divider-color);
+                border-radius: 4px;
+                background-color: var(--card-background-color);
+                color: var(--primary-text-color);
+            }
+            
+            .option input[type="checkbox"] {
+                margin-right: 8px;
+            }
+            
+            .option label:has(input[type="checkbox"]) {
+                flex-direction: row;
+                align-items: center;
+            }
+        `;
+    }
 }
 
 customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
