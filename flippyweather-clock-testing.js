@@ -94,7 +94,7 @@ const weatherDefaults = {
     icon_opacity: 'medium'
 };
 
-const flippyVersion = "4.1.0-testing";
+const flippyVersion = "4.2.0-testing";
 
 console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
@@ -139,6 +139,9 @@ class FlippyWeatherTesting extends LitElement {
         }
         
         this._config = defaultConfig;
+        
+        // Debug logging for clock size
+        console.log('FlippyWeather Config - clock_size:', this._config.clock_size);
     }
 
     async connectedCallback() {
@@ -319,6 +322,8 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     getClockSize() {
+        const clockSize = this._config.clock_size || 'medium';
+        
         const sizes = {
             small: { 
                 flip: '30px', 
@@ -333,19 +338,27 @@ class FlippyWeatherTesting extends LitElement {
                 separator: '2.5em' 
             },
             large: { 
-                flip: '55px', 
-                height: '80px', 
-                font: '3em', 
-                separator: '3.5em' 
+                flip: '60px', 
+                height: '90px', 
+                font: '3.5em', 
+                separator: '4em' 
             },
             'extra-large': { 
-                flip: '70px', 
-                height: '100px', 
-                font: '4em', 
-                separator: '4.5em' 
+                flip: '80px', 
+                height: '120px', 
+                font: '5em', 
+                separator: '5.5em' 
+            },
+            huge: { 
+                flip: '100px', 
+                height: '150px', 
+                font: '6em', 
+                separator: '7em' 
             }
         };
-        return sizes[this._config.clock_size] || sizes.medium;
+        
+        console.log('Clock size requested:', clockSize, 'Result:', sizes[clockSize]);
+        return sizes[clockSize] || sizes.medium;
     }
 
     getIconOpacity() {
@@ -421,7 +434,7 @@ class FlippyWeatherTesting extends LitElement {
                 .left-section {
                     display: flex;
                     align-items: center;
-                    gap: clamp(4px, 1vw, 8px);
+                    gap: clamp(4px, 1vw, 12px);
                     position: relative;
                     z-index: 2;
                     flex-shrink: 0;
@@ -464,8 +477,8 @@ class FlippyWeatherTesting extends LitElement {
                     height: 100%;
                     backface-visibility: hidden;
                     background: rgba(255, 255, 255, 0.15);
-                    border-radius: clamp(4px, 0.8vw, 12px);
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    border-radius: clamp(6px, 1.2vw, 16px);
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -473,18 +486,19 @@ class FlippyWeatherTesting extends LitElement {
                     font-weight: bold;
                     color: #ffffff;
                     font-family: 'Courier New', monospace;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.8)' : 'none'};
-                    backdrop-filter: ${this._config.blur_background ? 'blur(5px)' : 'none'};
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.9)' : 'none'};
+                    backdrop-filter: ${this._config.blur_background ? 'blur(8px)' : 'none'};
                 }
                 
                 .clock-separator {
                     font-size: ${clockSize.separator};
                     color: white;
                     animation: blink 2s infinite;
-                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.5)' : 'none'};
-                    margin: 0 clamp(2px, 0.5vw, 8px);
+                    text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.7)' : 'none'};
+                    margin: 0 clamp(4px, 1vw, 12px);
                     flex-shrink: 0;
+                    font-weight: bold;
                 }
                 
                 @keyframes blink {
@@ -556,6 +570,11 @@ class FlippyWeatherTesting extends LitElement {
                         font-size: 120px;
                         opacity: ${iconOpacity * 0.8};
                     }
+                    
+                    .flip-card {
+                        width: calc(${clockSize.flip} * 0.7);
+                        height: calc(${clockSize.height} * 0.7);
+                    }
                 }
                 
                 @container (max-width: 280px) {
@@ -564,8 +583,8 @@ class FlippyWeatherTesting extends LitElement {
                     }
                     
                     .flip-card {
-                        width: calc(${clockSize.flip} * 0.8);
-                        height: calc(${clockSize.height} * 0.8);
+                        width: calc(${clockSize.flip} * 0.6);
+                        height: calc(${clockSize.height} * 0.6);
                     }
                     
                     .am-pm-indicator {
