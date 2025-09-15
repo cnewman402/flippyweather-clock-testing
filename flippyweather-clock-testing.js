@@ -517,17 +517,6 @@ class FlippyWeatherTesting extends LitElement {
                     text-overflow: ellipsis;
                     max-width: 100%;
                 }
-                
-                .time {
-                    font-size: clamp(0.6em, 2vw, 0.8em);
-                    color: white;
-                    opacity: 0.9;
-                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    max-width: 100%;
-                }
 
                 /* Responsive adjustments for very narrow cards */
                 @container (max-width: 350px) {
