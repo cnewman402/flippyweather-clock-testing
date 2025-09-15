@@ -739,4 +739,87 @@ class FlippyWeatherConfigEditor extends LitElement {
 
                 <div class="option">
                     <label>
-                        <input type="
+                        <input type="checkbox" .checked=${this._config.text_shadow} @change=${this._valueChanged} .configValue=${'text_shadow'}>
+                        Text shadow effects
+                    </label>
+                </div>
+
+                <div class="option">
+                    <label>
+                        <input type="checkbox" .checked=${this._config.blur_background} @change=${this._valueChanged} .configValue=${'blur_background'}>
+                        Blur background effects
+                    </label>
+                </div>
+            </div>
+        `;
+    }
+
+    _valueChanged(ev) {
+        if (!this._config || !this.hass) {
+            return;
+        }
+
+        const target = ev.target;
+        const configValue = target.configValue;
+        
+        if (this[`_${configValue}`] === target.value || this[`_${configValue}`] === target.checked) {
+            return;
+        }
+
+        let value;
+        if (target.type === 'checkbox') {
+            value = target.checked;
+        } else {
+            value = target.value;
+        }
+
+        this._config = { ...this._config, [configValue]: value };
+
+        const messageEvent = new CustomEvent('config-changed', {
+            detail: { config: this._config },
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(messageEvent);
+    }
+
+    static styles = css`
+        .card-config {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px;
+        }
+        
+        .option {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .option label {
+            font-weight: 500;
+            color: var(--primary-text-color);
+        }
+        
+        .option select, .option input[type="text"] {
+            padding: 8px;
+            border: 1px solid var(--divider-color);
+            border-radius: 4px;
+            background-color: var(--card-background-color);
+            color: var(--primary-text-color);
+        }
+        
+        .option input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .option label:has(input[type="checkbox"]) {
+            flex-direction: row;
+            align-items: center;
+        }
+    `;
+}
+
+customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
+customElements.define("flippyweather-clock-editor", FlippyWeatherConfigEditor);
