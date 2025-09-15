@@ -340,6 +340,31 @@ class FlippyWeatherTesting extends LitElement {
                     line-height: 1;
                     filter: none;
                     text-shadow: none;
+                    opacity: 1 !important;
+                }
+                
+                .weather-icon-large.sun {
+                    opacity: 1 !important;
+                }
+                
+                .weather-icon-large.rain {
+                    opacity: 1 !important;
+                }
+                
+                .weather-icon-large.snow {
+                    opacity: 1 !important;
+                }
+                
+                .weather-icon-large.storm {
+                    opacity: 1 !important;
+                }
+                
+                .weather-icon-large.cloud {
+                    opacity: 1 !important;
+                }
+                
+                .weather-icon-large.fog {
+                    opacity: 1 !important;
                 }
                 
                 .top-section {
