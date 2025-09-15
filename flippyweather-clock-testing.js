@@ -232,14 +232,19 @@ class FlippyWeatherTesting extends LitElement {
         
         const lowerCondition = condition.toLowerCase();
         
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) return '☀️';
-        if (lowerCondition.includes('partlycloudy') || lowerCondition.includes('partly-cloudy')) return '⛅';
-        if (lowerCondition.includes('cloudy')) return '☁️';
-        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return '🌧️';
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) return '⛈️';
+        // Check for compound conditions first (more specific)
         if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) return '❄️';
-        if (lowerCondition.includes('fog')) return '🌫️';
+        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return '🌧️';
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm') || lowerCondition.includes('thunderstorm')) return '⛈️';
+        if (lowerCondition.includes('fog') || lowerCondition.includes('foggy') || lowerCondition.includes('mist')) return '🌫️';
         if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) return '💨';
+        
+        // Then check for single conditions
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear') || lowerCondition.includes('sun')) return '☀️';
+        if (lowerCondition.includes('partlycloudy') || lowerCondition.includes('partly-cloudy') || lowerCondition.includes('partly cloudy')) return '⛅';
+        if (lowerCondition.includes('cloudy') || lowerCondition.includes('overcast')) return '☁️';
+        if (lowerCondition.includes('hail') || lowerCondition.includes('sleet')) return '🧊';
+        if (lowerCondition.includes('drizzle')) return '🌦️';
         
         return '🌤️';
     }
@@ -252,23 +257,27 @@ class FlippyWeatherTesting extends LitElement {
         const hour = now.getHours();
         const isNightTime = hour < 6 || hour >= 20;
         
-        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) {
-            return `weather-rain${isNightTime ? '-night' : ''}`;
-        }
-        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) {
-            return `weather-snow${isNightTime ? '-night' : ''}`;
-        }
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) {
+        // Priority order: most specific conditions first
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm') || lowerCondition.includes('thunderstorm')) {
             return `weather-storm${isNightTime ? '-night' : ''}`;
         }
-        if (lowerCondition.includes('cloudy')) {
+        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow') || lowerCondition.includes('blizzard')) {
+            return `weather-snow${isNightTime ? '-night' : ''}`;
+        }
+        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain') || lowerCondition.includes('drizzle')) {
+            return `weather-rain${isNightTime ? '-night' : ''}`;
+        }
+        if (lowerCondition.includes('fog') || lowerCondition.includes('foggy') || lowerCondition.includes('mist')) {
+            return `weather-fog${isNightTime ? '-night' : ''}`;
+        }
+        if (lowerCondition.includes('cloudy') || lowerCondition.includes('overcast')) {
             return `weather-cloudy${isNightTime ? '-night' : ''}`;
         }
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) {
-            return isNightTime ? 'weather-clear-night' : 'weather-sunny';
+        if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) {
+            return `weather-cloudy${isNightTime ? '-night' : ''}`;  // Use cloudy animation for wind
         }
-        if (lowerCondition.includes('fog')) {
-            return `weather-fog${isNightTime ? '-night' : ''}`;
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear') || lowerCondition.includes('sun')) {
+            return isNightTime ? 'weather-clear-night' : 'weather-sunny';
         }
         
         return isNightTime ? 'weather-default-night' : 'weather-default';
@@ -279,12 +288,14 @@ class FlippyWeatherTesting extends LitElement {
         
         const lowerCondition = condition.toLowerCase();
         
-        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear')) return 'sun';
-        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain')) return 'rain';
-        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow')) return 'snow';
-        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm')) return 'storm';
-        if (lowerCondition.includes('cloudy')) return 'cloud';
-        if (lowerCondition.includes('fog')) return 'fog';
+        // Priority order for icon animations
+        if (lowerCondition.includes('lightning') || lowerCondition.includes('storm') || lowerCondition.includes('thunderstorm')) return 'storm';
+        if (lowerCondition.includes('snowy') || lowerCondition.includes('snow') || lowerCondition.includes('blizzard')) return 'snow';
+        if (lowerCondition.includes('rainy') || lowerCondition.includes('rain') || lowerCondition.includes('drizzle')) return 'rain';
+        if (lowerCondition.includes('fog') || lowerCondition.includes('foggy') || lowerCondition.includes('mist')) return 'fog';
+        if (lowerCondition.includes('cloudy') || lowerCondition.includes('overcast')) return 'cloud';
+        if (lowerCondition.includes('windy') || lowerCondition.includes('wind')) return 'cloud';  // Use cloud animation for wind
+        if (lowerCondition.includes('sunny') || lowerCondition.includes('clear') || lowerCondition.includes('sun')) return 'sun';
         
         return 'sun';
     }
