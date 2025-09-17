@@ -118,8 +118,8 @@ class FlippyWeatherTesting extends LitElement {
         this.currentTemperature = '--';
         this.weatherAnimationState = {
             isAnimating: false,
-            rotationCount: 0,
-            targetRotations: 5
+            bounceCount: 0,
+            targetBounces: 5
         };
     }
 
@@ -213,59 +213,60 @@ class FlippyWeatherTesting extends LitElement {
         
         this.weatherAnimationState = {
             isAnimating: true,
-            rotationCount: 0,
-            targetRotations: 5
+            bounceCount: 0,
+            targetBounces: 5
         };
         
-        const weatherIcon = this.shadowRoot?.querySelector('.weather-icon-animated');
+        const weatherIcon = this.shadowRoot?.querySelector('.weather-icon-large');
         if (weatherIcon) {
             this.performWeatherAnimation(weatherIcon);
         }
     }
 
     performWeatherAnimation(element) {
-        // Reset and start from bottom
-        element.style.transform = 'translateY(100%) rotateZ(0deg)';
+        // Start from bottom and bounce up
+        element.style.transform = 'translateY(100%)';
         element.style.opacity = '0';
         
-        // Start animation with bottom entry
         setTimeout(() => {
-            element.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease-in';
-            element.style.transform = 'translateY(0%) rotateZ(0deg)';
+            element.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease-in';
+            element.style.transform = 'translateY(0%)';
             element.style.opacity = '1';
             
-            // Start rotation sequence after entry
+            // Start bounce sequence
             setTimeout(() => {
-                this.performRotationSequence(element);
-            }, 400);
+                this.performBounceSequence(element);
+            }, 300);
         }, 100);
     }
 
-    performRotationSequence(element) {
-        let currentRotation = 0;
-        const rotationInterval = setInterval(() => {
-            currentRotation += 72; // 360/5 = 72 degrees per rotation
-            element.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-            element.style.transform = `translateY(0%) rotateZ(${currentRotation}deg)`;
-            
-            this.weatherAnimationState.rotationCount++;
-            
-            if (this.weatherAnimationState.rotationCount >= this.weatherAnimationState.targetRotations) {
-                clearInterval(rotationInterval);
+    performBounceSequence(element) {
+        const bounceHeight = ['-15%', '-10%', '-7%', '-4%', '-2%'];
+        
+        const bounceInterval = setInterval(() => {
+            if (this.weatherAnimationState.bounceCount < this.weatherAnimationState.targetBounces) {
+                const currentBounce = bounceHeight[this.weatherAnimationState.bounceCount] || '-2%';
                 
-                // Final settle animation
+                element.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                element.style.transform = `translateY(${currentBounce})`;
+                
+                // Bounce back down
                 setTimeout(() => {
-                    element.style.transition = 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                    element.style.transform = 'translateY(0%) rotateZ(360deg)';
-                    
-                    setTimeout(() => {
-                        element.style.transform = 'translateY(0%) rotateZ(0deg)';
-                        element.style.transition = 'none';
-                        this.weatherAnimationState.isAnimating = false;
-                    }, 1000);
-                }, 200);
+                    element.style.transform = 'translateY(0%)';
+                }, 150);
+                
+                this.weatherAnimationState.bounceCount++;
+            } else {
+                clearInterval(bounceInterval);
+                
+                // Final settle
+                setTimeout(() => {
+                    element.style.transition = 'transform 0.5s ease-out';
+                    element.style.transform = 'translateY(0%)';
+                    this.weatherAnimationState.isAnimating = false;
+                }, 300);
             }
-        }, 650);
+        }, 400);
     }
 
     animateDigitFlip(digitKey, oldDigit, newDigit) {
@@ -449,19 +450,12 @@ class FlippyWeatherTesting extends LitElement {
                     overflow: hidden;
                     transition: background 1s ease-in-out;
                     display: flex;
-                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
                     height: 100%;
                 }
                 
-                .main-content {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    flex: 1;
-                    position: relative;
-                }
-                
-                .weather-icon-animated {
+                .weather-icon-large {
                     position: absolute;
                     top: 0;
                     left: 0;
@@ -477,20 +471,25 @@ class FlippyWeatherTesting extends LitElement {
                     transition: none;
                 }
                 
+                .main-content {
+                    position: relative;
+                    z-index: 2;
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+                
                 .left-section {
                     display: flex;
                     align-items: center;
                     gap: 8px;
-                    position: relative;
-                    z-index: 2;
                 }
                 
                 .right-section {
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
-                    position: relative;
-                    z-index: 2;
                 }
                 
                 .flip-card {
@@ -646,9 +645,9 @@ class FlippyWeatherTesting extends LitElement {
             </style>
             <ha-card>
                 <div class="flippy-container ${weatherAnimationClass} ${nightModeClass} ${hasForecast ? 'has-forecast' : ''}">
+                    <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
+                    
                     <div class="main-content">
-                        <div class="weather-icon-animated ${iconClass}">${weatherIcon}</div>
-                        
                         <div class="left-section">
                             <div class="flip-card">
                                 <div class="flip-card-inner" data-digit="firstHourDigit">
