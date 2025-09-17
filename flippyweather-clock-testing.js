@@ -160,11 +160,11 @@ const sizeMap = {
 };
 
 const clockSizeMap = {
-    small: { fontSize: '1.4em', width: '30px', height: '45px' },
+    small: { fontSize: '1.4em', width: '40px', height: '45px' },
     medium: { fontSize: '2em', width: '40px', height: '60px' },
-    large: { fontSize: '2.6em', width: '50px', height: '75px' },
-    'extra-large': { fontSize: '3.2em', width: '60px', height: '90px' },
-    huge: { fontSize: '4em', width: '70px', height: '105px' }
+    large: { fontSize: '2.6em', width: '40px', height: '75px' },
+    'extra-large': { fontSize: '3.2em', width: '40px', height: '90px' },
+    huge: { fontSize: '4em', width: '40px', height: '105px' }
 };
 
 const temperatureSizeMap = {
@@ -631,7 +631,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .clock-separator {
-                    font-size: calc(${clockSize.fontSize} * 1.2);
+                    font-size: 2.5em;
                     color: white;
                     animation: blink 2s infinite;
                     text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
@@ -645,7 +645,7 @@ class FlippyWeatherTesting extends LitElement {
                 
                 .am-pm-indicator {
                     margin-left: 8px;
-                    font-size: calc(${clockSize.fontSize} * 0.45);
+                    font-size: 0.9em;
                     background: rgba(255,255,255,0.2);
                     padding: 4px 8px;
                     border-radius: 10px;
