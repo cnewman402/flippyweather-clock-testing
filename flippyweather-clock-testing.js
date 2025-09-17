@@ -22,8 +22,16 @@ const themes = {
                 background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             }
+            .flippy-container.compact-mode {
+                height: 160px;
+                flex-direction: column;
+                padding: 10px;
+            }
             .flippy-container.has-forecast {
                 height: 300px;
+            }
+            .flippy-container.compact-mode.has-forecast {
+                height: 240px;
             }
         `
     },
@@ -38,8 +46,16 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
                 height: 200px;
             }
+            .flippy-container.compact-mode {
+                height: 140px;
+                flex-direction: column;
+                padding: 10px;
+            }
             .flippy-container.has-forecast {
                 height: 280px;
+            }
+            .flippy-container.compact-mode.has-forecast {
+                height: 220px;
             }
         `
     },
@@ -54,8 +70,16 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
                 height: 200px;
             }
+            .flippy-container.compact-mode {
+                height: 140px;
+                flex-direction: column;
+                padding: 10px;
+            }
             .flippy-container.has-forecast {
                 height: 280px;
+            }
+            .flippy-container.compact-mode.has-forecast {
+                height: 220px;
             }
         `
     },
@@ -70,8 +94,16 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(255, 118, 117, 0.3);
                 height: 200px;
             }
+            .flippy-container.compact-mode {
+                height: 140px;
+                flex-direction: column;
+                padding: 10px;
+            }
             .flippy-container.has-forecast {
                 height: 280px;
+            }
+            .flippy-container.compact-mode.has-forecast {
+                height: 220px;
             }
         `
     },
@@ -86,21 +118,69 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 184, 148, 0.3);
                 height: 200px;
             }
+            .flippy-container.compact-mode {
+                height: 140px;
+                flex-direction: column;
+                padding: 10px;
+            }
             .flippy-container.has-forecast {
                 height: 280px;
+            }
+            .flippy-container.compact-mode.has-forecast {
+                height: 220px;
             }
         `
     }
 };
 
 const weatherDefaults = {
-    location_name: 'Weather',
-    am_pm: false,
-    animated_background: true,
-    theme: 'default',
     weather_entity: null,
+    theme: 'default',
     temperature_unit: 'fahrenheit',
+    am_pm: false,
+    compact_mode: false,
+    show_date: true,
+    show_condition: true,
+    clock_size: 'medium',
+    temperature_size: 'medium',
+    date_size: 'medium',
+    text_shadow: true,
+    blur_background: true,
+    icon_opacity: 'medium',
+    animated_background: true,
     show_forecast: true
+};
+
+const sizeMap = {
+    small: '0.8em',
+    medium: '1em',
+    large: '1.4em',
+    'extra-large': '1.8em',
+    huge: '2.4em'
+};
+
+const clockSizeMap = {
+    small: { fontSize: '1.4em', width: '30px', height: '45px' },
+    medium: { fontSize: '2em', width: '40px', height: '60px' },
+    large: { fontSize: '2.6em', width: '50px', height: '75px' },
+    'extra-large': { fontSize: '3.2em', width: '60px', height: '90px' },
+    huge: { fontSize: '4em', width: '70px', height: '105px' }
+};
+
+const temperatureSizeMap = {
+    small: '2.5em',
+    medium: '4em',
+    large: '5.5em',
+    'extra-large': '7em',
+    huge: '8.5em'
+};
+
+const iconOpacityMap = {
+    hidden: '0',
+    low: '0.3',
+    medium: '0.6',
+    high: '0.8',
+    full: '1'
 };
 
 const flippyVersion = "3.0.0-testing";
@@ -124,11 +204,20 @@ class FlippyWeatherTesting extends LitElement {
 
     static getStubConfig() {
         return { 
-            location_name: 'Home Assistant Location',
-            animated_background: true,
-            theme: 'default',
             weather_entity: 'weather.home',
+            theme: 'default',
             temperature_unit: 'fahrenheit',
+            am_pm: false,
+            compact_mode: false,
+            show_date: true,
+            show_condition: true,
+            clock_size: 'medium',
+            temperature_size: 'medium',
+            date_size: 'medium',
+            text_shadow: true,
+            blur_background: true,
+            icon_opacity: 'medium',
+            animated_background: true,
             show_forecast: true
         };
     }
@@ -169,7 +258,7 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     startBounceAnimation() {
-        if (this.bounceAnimation.isAnimating) return;
+        if (this.bounceAnimation.isAnimating || !this._config.animated_background) return;
         
         const iconElement = this.shadowRoot?.querySelector('.weather-icon-large');
         if (!iconElement) return;
@@ -184,7 +273,7 @@ class FlippyWeatherTesting extends LitElement {
         setTimeout(() => {
             iconElement.style.transition = 'all 0.5s ease-out';
             iconElement.style.transform = 'translateY(0px)';
-            iconElement.style.opacity = '1';
+            iconElement.style.opacity = iconOpacityMap[this._config.icon_opacity];
             
             // Start bouncing after entry
             setTimeout(() => {
@@ -433,6 +522,10 @@ class FlippyWeatherTesting extends LitElement {
         const dateString = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
         const hasForecast = this._config.show_forecast && weatherData.forecast.length > 0;
+        const clockSize = clockSizeMap[this._config.clock_size];
+        const tempSize = temperatureSizeMap[this._config.temperature_size];
+        const dateSize = sizeMap[this._config.date_size];
+        const iconOpacity = iconOpacityMap[this._config.icon_opacity];
 
         return html`
             <style>
@@ -448,6 +541,12 @@ class FlippyWeatherTesting extends LitElement {
                     height: 100%;
                 }
                 
+                .flippy-container.compact-mode {
+                    flex-direction: column;
+                    justify-content: center;
+                    gap: 10px;
+                }
+                
                 .weather-icon-large {
                     position: absolute;
                     top: 0;
@@ -461,6 +560,11 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
+                    opacity: ${iconOpacity};
+                }
+                
+                .compact-mode .weather-icon-large {
+                    font-size: 150px;
                 }
                 
                 .left-section {
@@ -471,6 +575,10 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 2;
                 }
                 
+                .compact-mode .left-section {
+                    justify-content: center;
+                }
+                
                 .right-section {
                     display: flex;
                     flex-direction: column;
@@ -479,9 +587,14 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 2;
                 }
                 
+                .compact-mode .right-section {
+                    align-items: center;
+                    text-align: center;
+                }
+                
                 .flip-card {
-                    width: 40px;
-                    height: 60px;
+                    width: ${clockSize.width};
+                    height: ${clockSize.height};
                     perspective: 1000px;
                 }
                 
@@ -502,26 +615,26 @@ class FlippyWeatherTesting extends LitElement {
                     width: 100%;
                     height: 100%;
                     backface-visibility: hidden;
-                    background: rgba(255, 255, 255, 0.15);
+                    background: ${this._config.blur_background ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.25)'};
                     border-radius: 8px;
                     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 2em;
+                    font-size: ${clockSize.fontSize};
                     font-weight: bold;
                     color: #ffffff;
                     font-family: 'Courier New', monospace;
                     border: 1px solid rgba(255, 255, 255, 0.2);
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-                    backdrop-filter: blur(5px);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.8)' : 'none'};
+                    backdrop-filter: ${this._config.blur_background ? 'blur(5px)' : 'none'};
                 }
                 
                 .clock-separator {
-                    font-size: 2.5em;
+                    font-size: calc(${clockSize.fontSize} * 1.2);
                     color: white;
                     animation: blink 2s infinite;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
                     margin: 0 5px;
                 }
                 
@@ -532,46 +645,68 @@ class FlippyWeatherTesting extends LitElement {
                 
                 .am-pm-indicator {
                     margin-left: 8px;
-                    font-size: 0.9em;
+                    font-size: calc(${clockSize.fontSize} * 0.45);
                     background: rgba(255,255,255,0.2);
                     padding: 4px 8px;
                     border-radius: 10px;
                     font-weight: bold;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'};
                 }
                 
                 .temperature {
-                    font-size: 4em;
+                    font-size: ${tempSize};
                     font-weight: bold;
                     color: white;
-                    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+                    text-shadow: ${this._config.text_shadow ? '3px 3px 6px rgba(0,0,0,0.9)' : 'none'};
                     text-align: right;
                     margin-bottom: 5px;
                 }
                 
-                .condition {
-                    font-size: 1.2em;
-                    font-weight: bold;
-                    color: white;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                    text-align: right;
-                    margin-bottom: 5px;
-                }
-                
-                .day-display {
-                    font-size: 0.9em;
-                    color: white;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-                    text-align: right;
+                .compact-mode .temperature {
+                    text-align: center;
                     margin-bottom: 2px;
                 }
                 
+                .condition {
+                    font-size: calc(${dateSize} * 1.3);
+                    font-weight: bold;
+                    color: white;
+                    text-shadow: ${this._config.text_shadow ? '2px 2px 4px rgba(0,0,0,0.7)' : 'none'};
+                    text-align: right;
+                    margin-bottom: 5px;
+                    display: ${this._config.show_condition ? 'block' : 'none'};
+                }
+                
+                .compact-mode .condition {
+                    text-align: center;
+                    margin-bottom: 2px;
+                }
+                
+                .day-display {
+                    font-size: ${dateSize};
+                    color: white;
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
+                    text-align: right;
+                    margin-bottom: 2px;
+                    display: ${this._config.show_date ? 'block' : 'none'};
+                }
+                
+                .compact-mode .day-display {
+                    text-align: center;
+                    margin-bottom: 1px;
+                }
+                
                 .date {
-                    font-size: 0.8em;
+                    font-size: calc(${dateSize} * 0.85);
                     color: white;
                     opacity: 0.9;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
                     text-align: right;
+                    display: ${this._config.show_date ? 'block' : 'none'};
+                }
+                
+                .compact-mode .date {
+                    text-align: center;
                 }
                 
                 .forecast-section {
@@ -582,6 +717,15 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 2;
                     padding-top: 10px;
                     border-top: 1px solid rgba(255, 255, 255, 0.3);
+                }
+                
+                .compact-mode .forecast-section {
+                    position: relative;
+                    bottom: auto;
+                    left: auto;
+                    right: auto;
+                    margin-top: 10px;
+                    padding: 10px 0 0 0;
                 }
                 
                 .forecast-container {
@@ -595,10 +739,10 @@ class FlippyWeatherTesting extends LitElement {
                     flex-direction: column;
                     align-items: center;
                     flex: 1;
-                    background: rgba(255, 255, 255, 0.15);
+                    background: ${this._config.blur_background ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.25)'};
                     border-radius: 8px;
                     padding: 6px 4px;
-                    backdrop-filter: blur(10px);
+                    backdrop-filter: ${this._config.blur_background ? 'blur(10px)' : 'none'};
                     border: 1px solid rgba(255, 255, 255, 0.2);
                 }
                 
@@ -606,7 +750,7 @@ class FlippyWeatherTesting extends LitElement {
                     font-size: 0.7em;
                     font-weight: 600;
                     color: white;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
                     margin-bottom: 4px;
                 }
                 
@@ -618,7 +762,7 @@ class FlippyWeatherTesting extends LitElement {
                 .forecast-temp {
                     font-size: 0.65em;
                     color: white;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+                    text-shadow: ${this._config.text_shadow ? '1px 1px 2px rgba(0,0,0,0.7)' : 'none'};
                     font-weight: 500;
                     text-align: center;
                 }
@@ -633,7 +777,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
             </style>
             <ha-card>
-                <div class="flippy-container ${weatherAnimationClass} ${nightModeClass} ${hasForecast ? 'has-forecast' : ''}">
+                <div class="flippy-container ${weatherAnimationClass} ${nightModeClass} ${this._config.compact_mode ? 'compact-mode' : ''} ${hasForecast ? 'has-forecast' : ''}">
                     <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
                     <div class="left-section">
@@ -704,7 +848,12 @@ class FlippyWeatherTesting extends LitElement {
 
     getCardSize() {
         const hasForecast = this._config.show_forecast && this.getWeatherFromEntity().forecast.length > 0;
-        return hasForecast ? 3 : 2;
+        const isCompact = this._config.compact_mode;
+        
+        if (hasForecast && isCompact) return 3;
+        if (hasForecast) return 3;
+        if (isCompact) return 2;
+        return 2;
     }
 
     set hass(hass) {
