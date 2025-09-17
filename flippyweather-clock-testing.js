@@ -96,11 +96,11 @@ const weatherDefaults = {
     date_size: 'medium'
 };
 
-const flippyVersion = "4.10.0-testing";
+const flippyVersion = "4.10.0";
 
-console.info("%c 🌤️ FlippyWeather Clock Testing %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
+console.info("%c 🌤️ FlippyWeather Clock %c " + flippyVersion + " ", "color: white; background: #555555; border-radius: 3px 0 0 3px; padding: 1px 0;", "color: white; background: #3a7ec6; border-radius: 0 3px 3px 0; padding: 1px 0;");
 
-class FlippyWeatherTesting extends LitElement {
+class FlippyWeatherClock extends LitElement {
     constructor() {
         super();
         this.weatherData = null;
@@ -767,4 +767,4 @@ class FlippyWeatherTesting extends LitElement {
     }
 }
 
-customElements.define("flippyweather-clock-testing", FlippyWeatherTesting);
+customElements.define("flippyweather-clock-testing", FlippyWeatherClock);
