@@ -16,11 +16,14 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-                height: 280px;
+                height: 220px;
             }
             .flippy-container.night-mode {
                 background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            }
+            .flippy-container.has-forecast {
+                height: 280px;
             }
         `
     },
@@ -33,7 +36,10 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-                height: 280px;
+                height: 200px;
+            }
+            .flippy-container.has-forecast {
+                height: 260px;
             }
         `
     },
@@ -46,7 +52,10 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-                height: 280px;
+                height: 200px;
+            }
+            .flippy-container.has-forecast {
+                height: 260px;
             }
         `
     },
@@ -59,7 +68,10 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(255, 118, 117, 0.3);
-                height: 280px;
+                height: 200px;
+            }
+            .flippy-container.has-forecast {
+                height: 260px;
             }
         `
     },
@@ -72,7 +84,10 @@ const themes = {
                 border-radius: 15px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 box-shadow: 0 8px 32px rgba(0, 184, 148, 0.3);
-                height: 280px;
+                height: 200px;
+            }
+            .flippy-container.has-forecast {
+                height: 260px;
             }
         `
     }
@@ -142,7 +157,9 @@ class FlippyWeatherTesting extends LitElement {
         }, 1000);
         
         // Trigger weather animation on connect
-        this.triggerWeatherAnimation();
+        setTimeout(() => {
+            this.triggerWeatherAnimation();
+        }, 500);
     }
 
     disconnectedCallback() {
@@ -183,9 +200,11 @@ class FlippyWeatherTesting extends LitElement {
         
         // Check for weather condition changes to trigger animation
         const newWeatherData = this.getWeatherFromEntity();
-        if (this.currentCondition !== newWeatherData.condition) {
+        if (this.currentCondition !== newWeatherData.condition && this.currentCondition !== '') {
             this.currentCondition = newWeatherData.condition;
             this.triggerWeatherAnimation();
+        } else if (this.currentCondition === '') {
+            this.currentCondition = newWeatherData.condition;
         }
     }
 
@@ -205,6 +224,7 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     performWeatherAnimation(element) {
+        // Reset and start from bottom
         element.style.transform = 'translateY(100%) rotateZ(0deg)';
         element.style.opacity = '0';
         
@@ -418,6 +438,8 @@ class FlippyWeatherTesting extends LitElement {
         const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
         const dateString = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
+        const hasForecast = this._config.show_forecast && weatherData.forecast.length > 0;
+
         return html`
             <style>
                 ${selectedTheme.css}
@@ -441,10 +463,14 @@ class FlippyWeatherTesting extends LitElement {
                 
                 .weather-icon-animated {
                     position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-size: 200px;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 300px;
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
@@ -529,7 +555,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .temperature {
-                    font-size: 3.2em;
+                    font-size: 4em;
                     font-weight: bold;
                     color: white;
                     text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
@@ -538,7 +564,7 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .condition {
-                    font-size: 1.1em;
+                    font-size: 1.2em;
                     font-weight: bold;
                     color: white;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
@@ -547,25 +573,24 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .day-display {
-                    font-size: 1.0em;
-                    font-weight: 600;
+                    font-size: 0.9em;
                     color: white;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
                     text-align: right;
-                    margin-bottom: 3px;
+                    margin-bottom: 2px;
                 }
                 
                 .date {
-                    font-size: 0.85em;
+                    font-size: 0.8em;
                     color: white;
+                    opacity: 0.9;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
                     text-align: right;
-                    opacity: 0.9;
                 }
                 
                 .forecast-section {
-                    margin-top: 15px;
-                    padding-top: 10px;
+                    margin-top: 10px;
+                    padding-top: 8px;
                     border-top: 1px solid rgba(255, 255, 255, 0.2);
                     position: relative;
                     z-index: 2;
@@ -574,7 +599,7 @@ class FlippyWeatherTesting extends LitElement {
                 .forecast-container {
                     display: flex;
                     justify-content: space-between;
-                    gap: 8px;
+                    gap: 6px;
                 }
                 
                 .forecast-day {
@@ -583,30 +608,31 @@ class FlippyWeatherTesting extends LitElement {
                     align-items: center;
                     flex: 1;
                     background: rgba(255, 255, 255, 0.1);
-                    border-radius: 8px;
-                    padding: 6px 4px;
+                    border-radius: 6px;
+                    padding: 4px 2px;
                     backdrop-filter: blur(5px);
                     border: 1px solid rgba(255, 255, 255, 0.1);
                 }
                 
                 .forecast-day-name {
-                    font-size: 0.7em;
+                    font-size: 0.65em;
                     font-weight: 600;
                     color: white;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-                    margin-bottom: 4px;
+                    margin-bottom: 2px;
                 }
                 
                 .forecast-icon {
-                    font-size: 1.2em;
-                    margin-bottom: 4px;
+                    font-size: 1em;
+                    margin-bottom: 2px;
                 }
                 
                 .forecast-temp {
-                    font-size: 0.7em;
+                    font-size: 0.6em;
                     color: white;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
                     font-weight: 500;
+                    text-align: center;
                 }
                 
                 .forecast-temp-high {
@@ -617,49 +643,9 @@ class FlippyWeatherTesting extends LitElement {
                     opacity: 0.8;
                     margin-left: 2px;
                 }
-                
-                @media (max-width: 480px) {
-                    .flippy-container {
-                        height: 300px;
-                    }
-                    
-                    .flip-card {
-                        width: 35px;
-                        height: 50px;
-                    }
-                    
-                    .flip-card-face {
-                        font-size: 1.6em;
-                    }
-                    
-                    .clock-separator {
-                        font-size: 2em;
-                    }
-                    
-                    .temperature {
-                        font-size: 2.8em;
-                    }
-                    
-                    .weather-icon-animated {
-                        font-size: 150px;
-                    }
-                    
-                    .forecast-day {
-                        padding: 4px 2px;
-                    }
-                    
-                    .forecast-day-name,
-                    .forecast-temp {
-                        font-size: 0.6em;
-                    }
-                    
-                    .forecast-icon {
-                        font-size: 1em;
-                    }
-                }
             </style>
             <ha-card>
-                <div class="flippy-container ${weatherAnimationClass} ${nightModeClass}">
+                <div class="flippy-container ${weatherAnimationClass} ${nightModeClass} ${hasForecast ? 'has-forecast' : ''}">
                     <div class="main-content">
                         <div class="weather-icon-animated ${iconClass}">${weatherIcon}</div>
                         
@@ -705,7 +691,7 @@ class FlippyWeatherTesting extends LitElement {
                         </div>
                     </div>
                     
-                    ${this._config.show_forecast && weatherData.forecast.length > 0 ? html`
+                    ${hasForecast ? html`
                         <div class="forecast-section">
                             <div class="forecast-container">
                                 ${weatherData.forecast.map(day => html`
@@ -731,7 +717,8 @@ class FlippyWeatherTesting extends LitElement {
     }
 
     getCardSize() {
-        return this._config.show_forecast ? 3 : 2;
+        const hasForecast = this._config.show_forecast && this.getWeatherFromEntity().forecast.length > 0;
+        return hasForecast ? 3 : 2;
     }
 
     set hass(hass) {
