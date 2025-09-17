@@ -23,7 +23,7 @@ const themes = {
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             }
             .flippy-container.has-forecast {
-                height: 280px;
+                height: 300px;
             }
         `
     },
@@ -39,7 +39,7 @@ const themes = {
                 height: 200px;
             }
             .flippy-container.has-forecast {
-                height: 260px;
+                height: 280px;
             }
         `
     },
@@ -55,7 +55,7 @@ const themes = {
                 height: 200px;
             }
             .flippy-container.has-forecast {
-                height: 260px;
+                height: 280px;
             }
         `
     },
@@ -71,7 +71,7 @@ const themes = {
                 height: 200px;
             }
             .flippy-container.has-forecast {
-                height: 260px;
+                height: 280px;
             }
         `
     },
@@ -87,7 +87,7 @@ const themes = {
                 height: 200px;
             }
             .flippy-container.has-forecast {
-                height: 260px;
+                height: 280px;
             }
         `
     }
@@ -116,10 +116,9 @@ class FlippyWeatherTesting extends LitElement {
         this.oldTime = {};
         this.currentCondition = '';
         this.currentTemperature = '--';
-        this.weatherAnimationState = {
+        this.bounceAnimation = {
             isAnimating: false,
-            bounceCount: 0,
-            targetBounces: 5
+            bounces: 0
         };
     }
 
@@ -156,16 +155,71 @@ class FlippyWeatherTesting extends LitElement {
             this.requestUpdate();
         }, 1000);
         
-        // Trigger weather animation on connect
+        // Start bounce animation after initial load
         setTimeout(() => {
-            this.triggerWeatherAnimation();
-        }, 500);
+            this.startBounceAnimation();
+        }, 1000);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
+        }
+    }
+
+    startBounceAnimation() {
+        if (this.bounceAnimation.isAnimating) return;
+        
+        const iconElement = this.shadowRoot?.querySelector('.weather-icon-large');
+        if (!iconElement) return;
+        
+        this.bounceAnimation.isAnimating = true;
+        this.bounceAnimation.bounces = 0;
+        
+        // Start from bottom
+        iconElement.style.transform = 'translateY(100px)';
+        iconElement.style.opacity = '0';
+        
+        setTimeout(() => {
+            iconElement.style.transition = 'all 0.5s ease-out';
+            iconElement.style.transform = 'translateY(0px)';
+            iconElement.style.opacity = '1';
+            
+            // Start bouncing after entry
+            setTimeout(() => {
+                this.doBounce(iconElement);
+            }, 500);
+        }, 100);
+    }
+
+    doBounce(element) {
+        const bounceHeights = [-40, -30, -20, -15, -10]; // Pixel values for bounces
+        
+        if (this.bounceAnimation.bounces < 5) {
+            const bounceHeight = bounceHeights[this.bounceAnimation.bounces];
+            
+            // Bounce up
+            element.style.transition = 'transform 0.2s ease-out';
+            element.style.transform = `translateY(${bounceHeight}px)`;
+            
+            // Bounce down
+            setTimeout(() => {
+                element.style.transition = 'transform 0.2s ease-in';
+                element.style.transform = 'translateY(0px)';
+                
+                this.bounceAnimation.bounces++;
+                
+                // Next bounce
+                setTimeout(() => {
+                    this.doBounce(element);
+                }, 200);
+            }, 200);
+        } else {
+            // Final settle
+            element.style.transition = 'transform 0.3s ease-out';
+            element.style.transform = 'translateY(0px)';
+            this.bounceAnimation.isAnimating = false;
         }
     }
 
@@ -198,75 +252,14 @@ class FlippyWeatherTesting extends LitElement {
         
         this.oldTime = currentTime;
         
-        // Check for weather condition changes to trigger animation
+        // Trigger bounce on weather change
         const newWeatherData = this.getWeatherFromEntity();
         if (this.currentCondition !== newWeatherData.condition && this.currentCondition !== '') {
             this.currentCondition = newWeatherData.condition;
-            this.triggerWeatherAnimation();
+            this.startBounceAnimation();
         } else if (this.currentCondition === '') {
             this.currentCondition = newWeatherData.condition;
         }
-    }
-
-    triggerWeatherAnimation() {
-        if (!this._config.animated_background || this.weatherAnimationState.isAnimating) return;
-        
-        this.weatherAnimationState = {
-            isAnimating: true,
-            bounceCount: 0,
-            targetBounces: 5
-        };
-        
-        const weatherIcon = this.shadowRoot?.querySelector('.weather-icon-large');
-        if (weatherIcon) {
-            this.performWeatherAnimation(weatherIcon);
-        }
-    }
-
-    performWeatherAnimation(element) {
-        // Start from bottom and bounce up
-        element.style.transform = 'translateY(100%)';
-        element.style.opacity = '0';
-        
-        setTimeout(() => {
-            element.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease-in';
-            element.style.transform = 'translateY(0%)';
-            element.style.opacity = '1';
-            
-            // Start bounce sequence
-            setTimeout(() => {
-                this.performBounceSequence(element);
-            }, 300);
-        }, 100);
-    }
-
-    performBounceSequence(element) {
-        const bounceHeight = ['-15%', '-10%', '-7%', '-4%', '-2%'];
-        
-        const bounceInterval = setInterval(() => {
-            if (this.weatherAnimationState.bounceCount < this.weatherAnimationState.targetBounces) {
-                const currentBounce = bounceHeight[this.weatherAnimationState.bounceCount] || '-2%';
-                
-                element.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                element.style.transform = `translateY(${currentBounce})`;
-                
-                // Bounce back down
-                setTimeout(() => {
-                    element.style.transform = 'translateY(0%)';
-                }, 150);
-                
-                this.weatherAnimationState.bounceCount++;
-            } else {
-                clearInterval(bounceInterval);
-                
-                // Final settle
-                setTimeout(() => {
-                    element.style.transition = 'transform 0.5s ease-out';
-                    element.style.transform = 'translateY(0%)';
-                    this.weatherAnimationState.isAnimating = false;
-                }, 300);
-            }
-        }, 400);
     }
 
     animateDigitFlip(digitKey, oldDigit, newDigit) {
@@ -332,7 +325,7 @@ class FlippyWeatherTesting extends LitElement {
             temperature: displayTemp,
             condition: condition,
             icon: this.getWeatherEmoji(condition),
-            forecast: forecast.slice(0, 5) // Limit to 5 days
+            forecast: forecast.slice(0, 5)
         };
     }
 
@@ -468,28 +461,22 @@ class FlippyWeatherTesting extends LitElement {
                     z-index: 1;
                     pointer-events: none;
                     line-height: 1;
-                    transition: none;
-                }
-                
-                .main-content {
-                    position: relative;
-                    z-index: 2;
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
                 }
                 
                 .left-section {
                     display: flex;
                     align-items: center;
                     gap: 8px;
+                    position: relative;
+                    z-index: 2;
                 }
                 
                 .right-section {
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
+                    position: relative;
+                    z-index: 2;
                 }
                 
                 .flip-card {
@@ -588,17 +575,19 @@ class FlippyWeatherTesting extends LitElement {
                 }
                 
                 .forecast-section {
-                    margin-top: 10px;
-                    padding-top: 8px;
-                    border-top: 1px solid rgba(255, 255, 255, 0.2);
-                    position: relative;
+                    position: absolute;
+                    bottom: 15px;
+                    left: 15px;
+                    right: 15px;
                     z-index: 2;
+                    padding-top: 10px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.3);
                 }
                 
                 .forecast-container {
                     display: flex;
                     justify-content: space-between;
-                    gap: 6px;
+                    gap: 8px;
                 }
                 
                 .forecast-day {
@@ -606,28 +595,28 @@ class FlippyWeatherTesting extends LitElement {
                     flex-direction: column;
                     align-items: center;
                     flex: 1;
-                    background: rgba(255, 255, 255, 0.1);
-                    border-radius: 6px;
-                    padding: 4px 2px;
-                    backdrop-filter: blur(5px);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 8px;
+                    padding: 6px 4px;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
                 }
                 
                 .forecast-day-name {
-                    font-size: 0.65em;
+                    font-size: 0.7em;
                     font-weight: 600;
                     color: white;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-                    margin-bottom: 2px;
+                    margin-bottom: 4px;
                 }
                 
                 .forecast-icon {
-                    font-size: 1em;
-                    margin-bottom: 2px;
+                    font-size: 1.2em;
+                    margin-bottom: 4px;
                 }
                 
                 .forecast-temp {
-                    font-size: 0.6em;
+                    font-size: 0.65em;
                     color: white;
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
                     font-weight: 500;
@@ -647,47 +636,45 @@ class FlippyWeatherTesting extends LitElement {
                 <div class="flippy-container ${weatherAnimationClass} ${nightModeClass} ${hasForecast ? 'has-forecast' : ''}">
                     <div class="weather-icon-large ${iconClass}">${weatherIcon}</div>
                     
-                    <div class="main-content">
-                        <div class="left-section">
-                            <div class="flip-card">
-                                <div class="flip-card-inner" data-digit="firstHourDigit">
-                                    <div class="flip-card-face">${hourStr[0]}</div>
-                                </div>
+                    <div class="left-section">
+                        <div class="flip-card">
+                            <div class="flip-card-inner" data-digit="firstHourDigit">
+                                <div class="flip-card-face">${hourStr[0]}</div>
                             </div>
-                            
-                            <div class="flip-card">
-                                <div class="flip-card-inner" data-digit="secondHourDigit">
-                                    <div class="flip-card-face">${hourStr[1]}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="clock-separator">:</div>
-                            
-                            <div class="flip-card">
-                                <div class="flip-card-inner" data-digit="firstMinuteDigit">
-                                    <div class="flip-card-face">${minuteStr[0]}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flip-card">
-                                <div class="flip-card-inner" data-digit="secondMinuteDigit">
-                                    <div class="flip-card-face">${minuteStr[1]}</div>
-                                </div>
-                            </div>
-                            
-                            ${this._config.am_pm ? html`
-                                <div class="am-pm-indicator">
-                                    ${now.getHours() >= 12 ? 'PM' : 'AM'}
-                                </div>
-                            ` : ''}
                         </div>
                         
-                        <div class="right-section">
-                            <div class="temperature">${weatherData.temperature}°${tempUnit}</div>
-                            <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
-                            <div class="day-display">${dayOfWeek}</div>
-                            <div class="date">${dateString}</div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner" data-digit="secondHourDigit">
+                                <div class="flip-card-face">${hourStr[1]}</div>
+                            </div>
                         </div>
+                        
+                        <div class="clock-separator">:</div>
+                        
+                        <div class="flip-card">
+                            <div class="flip-card-inner" data-digit="firstMinuteDigit">
+                                <div class="flip-card-face">${minuteStr[0]}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flip-card">
+                            <div class="flip-card-inner" data-digit="secondMinuteDigit">
+                                <div class="flip-card-face">${minuteStr[1]}</div>
+                            </div>
+                        </div>
+                        
+                        ${this._config.am_pm ? html`
+                            <div class="am-pm-indicator">
+                                ${now.getHours() >= 12 ? 'PM' : 'AM'}
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="right-section">
+                        <div class="temperature">${weatherData.temperature}°${tempUnit}</div>
+                        <div class="condition">${weatherData.condition.charAt(0).toUpperCase() + weatherData.condition.slice(1)}</div>
+                        <div class="day-display">${dayOfWeek}</div>
+                        <div class="date">${dateString}</div>
                     </div>
                     
                     ${hasForecast ? html`
